@@ -1,0 +1,28 @@
+DELETE {
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?s ?p ?o
+  }
+}
+WHERE {
+
+  VALUES ?type {
+    <http://mu.semte.ch/vocabularies/ext/MandatarisStatusCode>
+    <http://mu.semte.ch/vocabularies/ext/BeleidsdomeinCode>
+    <http://data.vlaanderen.be/ns/mandaat#Mandataris> # Note: this might eventually come from OP-Consumer 
+    <http://www.w3.org/ns/person#Person>
+    <http://www.w3.org/ns/org#Membership>
+    <http://data.vlaanderen.be/ns/mandaat#Fractie>
+    <http://data.vlaanderen.be/ns/mandaat#Mandaat>
+    <http://mu.semte.ch/vocabularies/ext/BestuursfunctieCode>
+    <http://data.vlaanderen.be/ns/besluit#Bestuursorgaan> # Note: this might eventually come from OP-Consumer, but ATM OP does not manage all organen
+    <http://mu.semte.ch/vocabularies/ext/BestuursorgaanClassificatieCode>
+    <http://data.vlaanderen.be/ns/besluit#Bestuurseenheid> # Note: this might eventually come from OP-Consumer, but ATM OP does not manage all eenheden
+    <http://mu.semte.ch/vocabularies/ext/BestuurseenheidClassificatieCode>
+    <http://www.w3.org/ns/prov#Location>
+  }
+
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?s a ?type;
+      ?p ?o
+  }
+}

@@ -1,0 +1,22 @@
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
+
+DELETE {
+    GRAPH ?g {
+        ?s prov:value ?o .
+    }
+}  INSERT {
+    GRAPH ?g {
+        ?s prov:value ?fixed .
+    }
+} WHERE {
+    GRAPH ?g {
+        ?s a besluit:Besluit ;
+            prov:value ?o .
+        FILTER(datatype(?o) = "http://www.w3.org/2000/01/rdf-schema#Literal")
+        BIND(STR(?o) AS ?fixed)
+    }
+    VALUES ?g {
+        <http://mu.semte.ch/graphs/public>
+    }
+}

@@ -1,0 +1,10 @@
+docker-compose.override.yml
+.vscode
+/data/db/*
+/data/files/*
+!/data/db/virtuoso.ini
+!/data/db/toLoad
+!/data/db/toLoad/*
+Makefile
+/config/migrations/local/*
+todo.md

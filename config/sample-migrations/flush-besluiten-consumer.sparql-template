@@ -1,0 +1,27 @@
+DELETE {
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?s ?p ?o
+  }
+}
+WHERE {
+
+  VALUES ?type {
+    <http://data.vlaanderen.be/ns/besluit#Agendapunt>
+    <http://data.vlaanderen.be/ns/besluit#Artikel>
+    <http://data.vlaanderen.be/ns/besluit#BehandelingVanAgendapunt>
+    <http://data.vlaanderen.be/ns/besluit#Besluit>
+    <http://xmlns.com/foaf/0.1/Document>
+    <https://data.vlaanderen.be/ns/generiek#DocumentOnderdeel>
+    <http://data.europa.eu/eli/ontology#LegalExpression>
+    <http://data.europa.eu/eli/ontology#LegalResource>
+    <http://data.europa.eu/eli/ontology#LegalResourceSubdivision>
+    <http://data.vlaanderen.be/ns/besluit#Stemming>
+    <http://data.vlaanderen.be/ns/besluit#Vergaderactiviteit>
+    <http://data.vlaanderen.be/ns/besluit#Zitting>
+  }
+
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?s a ?type;
+      ?p ?o
+  }
+}

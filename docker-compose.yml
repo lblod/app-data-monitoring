@@ -1,0 +1,188 @@
+version: "3.7"
+
+# General remark: The app 'Lokaal beslist' or 'Burgernabije besluitendatabank' was used as a template for this app and modified.
+# Login and user related lechanisms were copied, updated and adapted from 'Contactgegevens loket'
+# All credits to the developers of these projects
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # HTTP Proxy for identifying sessions
+  # https://github.com/mu-semtech/mu-identifier
+  identifier:
+    image: semtech/mu-identifier:1.9.1
+    environment:
+      SESSION_COOKIE_SECURE: "on"
+      DEFAULT_MU_AUTH_ALLOWED_GROUPS_HEADER: '[{"variables":[],"name":"public"}]'
+      DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_HEADER: "*"
+    links:
+      - dispatcher:dispatcher
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Reverse proxy that configures endpoints
+  # https://github.com/mu-semtech/mu-dispatcher
+  dispatcher:
+    image: semtech/mu-dispatcher:2.0.0
+    links:
+      - resources:resource
+    volumes:
+      - ./config/dispatcher:/config
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Front-end made for BNB
+  # https://github.com/lblod/frontend-data-monitoring
+  # frontend:
+  #   image: lblod/frontend-data-monitoring:0.0.1
+  #   links:
+  #     - identifier
+  #   restart: always
+  #   logging: *default-logging
+  #   labels:
+  #     - "logging=true"
+
+  # Proxy for mu-cl-resources that allows caching
+  # https://github.com/mu-semtech/mu-cache
+  cache:
+    image: semtech/mu-cache:2.0.2
+    links:
+      - resources:backend
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Allows accessing linked data as a JSON:API endpoint. Used by frontend
+  # https://github.com/mu-semtech/mu-cl-resources
+  resources:
+    image: semtech/mu-cl-resources:feature-optionally-accept-strange-resource-types
+    environment:
+      CACHE_CLEAR_PATH: "http://cache/.mu/clear-keys"
+    links:
+      - database:database
+    volumes:
+      - ./config/resources:/config
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Allows running .sparql & .ttl files to the triplestore
+  # https://github.com/mu-semtech/mu-migrations-service
+  migrations:
+    image: semtech/mu-migrations-service:0.8.0
+    links:
+      - triplestore:database
+    environment:
+      MU_SPARQL_TIMEOUT: "300"
+    volumes:
+      - ./config/migrations:/data/migrations
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # SPARQL Endpoint authorization service. Adds an authentication layer to the triplestore
+  # https://github.com/mu-semtech/mu-authorization
+  database:
+    image: semtech/mu-authorization:0.6.0-beta.8
+    environment:
+      MU_SPARQL_ENDPOINT: "http://triplestore:8890/sparql"
+      ERROR_ON_UNWRITTEN_DATA: "on"
+    volumes:
+      - ./config/authorization:/config
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # A linked-data database. All consumed data ends up here
+  # https://github.com/redpencilio/docker-virtuoso
+  triplestore:
+    image: redpencil/virtuoso:1.2.0-rc.1
+    environment:
+      SPARQL_UPDATE: "true"
+      DEFAULT_GRAPH: "http://mu.semte.ch/graphs/public"
+    volumes:
+      - ./data/db:/data
+      - ./config/virtuoso/virtuoso.ini:/data/virtuoso.ini
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Sends notifications to the uuid-generation & resources when new data is found on specific data.vlaanderen.be urls
+  # https://github.com/mu-semtech/delta-notifier
+  deltanotifier:
+    image: semtech/mu-delta-notifier
+    volumes:
+      - ./config/delta:/config
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Service that generates uuid's for imported data to allow linked-data usage
+  # https://github.com/redpencilio/uuid-generation-service
+  uuid-generation:
+    image: redpencil/uuid-generation:0.2.1
+    volumes:
+      - ./config/uuid-generation/:/config
+    links:
+      - triplestore:database
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # Like many other ABB apps we require knowledge of the different admin units and governing bodies.
+  # Op is the designated source of truth for that
+  # 
+  op-public-consumer:
+    image: lblod/delta-consumer:0.0.24
+    environment:
+      DCR_SERVICE_NAME: "op-public-consumer"
+      DCR_SYNC_BASE_URL: "https://organisaties.abb.vlaanderen.be/"
+      DCR_SYNC_FILES_PATH: "/sync/public/files"
+      DCR_SYNC_DATASET_SUBJECT: "http://data.lblod.info/datasets/delta-producer/dumps/PublicCacheGraphDump"
+      DCR_INITIAL_SYNC_JOB_OPERATION: "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/consumer/initialSync/op-public"
+      DCR_DELTA_SYNC_JOB_OPERATION: "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/consumer/deltaSync/op-public"
+      DCR_JOB_CREATOR_URI: "http://data.lblod.info/services/id/op-public-consumer"
+      DCR_KEEP_DELTA_FILES: "false"
+      DCR_DELTA_FILE_FOLDER: "/consumer-files"
+      DCR_DISABLE_DELTA_INGEST: "true" # toggle this in override, leave 'true' in default docker-compose.yml
+      DCR_DISABLE_INITIAL_SYNC: "true" # toggle this in override, leave 'true' in default docker-compose.yml
+      DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
+      DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
+      BATCH_SIZE: 250,
+    volumes:
+      - ./data/files/consumer-files/op-public:/consumer-files/
+      - ./config/consumer/op:/config/triples-dispatching/custom-dispatching
+
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
+
+  # ACM/IDM login service
+  login:
+    image: lblod/acmidm-login-service:0.9.2
+    environment:
+      MU_APPLICATION_AUTH_USERID_CLAIM: "vo_id"
+      MU_APPLICATION_AUTH_ROLE_CLAIM: "abb_datamonitoringapp_rol_3d"
+      MU_APPLICATION_GRAPH: "http://mu.semte.ch/graphs/public"
+      MU_APPLICATION_AUTH_DISCOVERY_URL: "https://authenticatie-ti.vlaanderen.be/op"
+      MU_APPLICATION_AUTH_CLIENT_ID: "tbd" # Later
+      MU_APPLICATION_AUTH_REDIRECT_URI: "tbd" # From contactgegevens "https://contactgegevens-loket.lblod.info/authorization/callback"
+      MU_APPLICATION_AUTH_CLIENT_SECRET: "secret"
+
+  #

@@ -1,0 +1,261 @@
+{
+  "info": {
+    "_postman_id": "630c50cd-963a-4645-a13f-e9b2491e21ab",
+    "name": "BNB",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "agenda_items",
+      "item": [
+        {
+          "name": "agenda_items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiPath}}/agenda_items",
+              "host": ["{{apiPath}}"],
+              "path": ["agenda_items"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page with {{limit}} amount of agenda items. If page is not defined it shows everything",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "3", 
+                  "description": "Amount of items per page",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": null,
+                  "description": "Minimum start date of items",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": null,
+                  "description": "Maximum end date of items",
+                  "disabled": true
+                },
+                {
+                  "key": "municipality",
+                  "value": "{{municipality}}",
+                  "description": "Municipality of item",
+                  "disabled": true
+                },
+                {
+                  "key": "decidedOn",
+                  "value": null,
+                  "description": "Date when vote took place",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "agenda_items",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiPath}}/agenda_items",
+                  "host": ["{{apiPath}}"],
+                  "path": ["agenda_items"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0",
+                      "description": "Page with {{limit}} amount of agenda items. If page is not defined it shows everything",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "3",
+                      "description": "Amount of items per page",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": null,
+                      "description": "Minimum start date of items",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": null,
+                      "description": "Maximum end date of items",
+                      "disabled": true
+                    },
+                    {
+                      "key": "municipality",
+                      "value": "{{municipality}}",
+                      "description": "Municipality of item",
+                      "disabled": true
+                    },
+                    {
+                      "key": "decidedOn",
+                      "value": null,
+                      "description": "Date when vote took place",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": null,
+              "cookie": [],
+              "body": "[\n        {\n    \"id\": \"96aef788-9dd7-48d8-bd2d-29917c97f2a2\",\n    \"title\": \"Herinrichting van de Marktstraat en omgeving in het centrum\",\n    \"body\": \"Er zal een herinrichting plaatsvinden van de Marktstraat en de omgeving in het centrum van de stad Mechelen om de verkeersveiligheid te verbeteren. De werkzaamheden zullen naar verwachting 12 maanden duren en beginnen op 1 juni 2023.\",\n    \"votedOn\": \"20/02/2023\",\n    \"startDate\": \"01/06/2023\",\n    \"endDate\": \"01/06/2024\",\n    \"municipality\": \"Mechelen\"\n    },\n    {\n    \"id\": \"e2bce8f8-49b1-4bfa-889b-bd8c2277d0fb\",\n    \"title\": \"Aanleg van een nieuwe woonwijk aan de rand van de stad\",\n    \"body\": \"Er zal een nieuwe woonwijk worden aangelegd aan de rand van de stad Kortrijk om te voorzien in de groeiende vraag naar huisvesting. De bouw zal naar verwachting 24 maanden duren en beginnen op 1 september 2023.\",\n    \"votedOn\": \"20/02/2023\",\n    \"startDate\": \"01/09/2023\",\n    \"endDate\": \"01/09/2025\",\n    \"municipality\": \"Kortrijk\"\n    }\n    {\n    \"id\": \"c31a88db-6e8c-425a-b6c2-6b9c6b81f6a4\",\n    \"title\": \"Uitbreiding van het fietspadennetwerk in de regio\",\n    \"body\": \"Er zal een uitbreiding plaatsvinden van het fietspadennetwerk in de regio Roeselare om de veiligheid van fietsers te verbeteren en duurzame mobiliteit te stimuleren. De werkzaamheden zullen naar verwachting 6 maanden duren en beginnen op 1 juli 2023.\",\n    \"votedOn\": \"20/02/2023\",\n    \"startDate\": \"01/07/2023\",\n    \"endDate\": \"01/01/2024\",\n    \"municipality\": \"Roeselare\"\n    },\n    {\n    \"id\": \"f5c5e5c5-874d-4d8f-a3de-9a0dcb84b7e3\",\n    \"title\": \"Sloop van oude gebouwen en bouw van een nieuw crematorium\",\n    \"body\": \"Er zullen oude gebouwen worden gesloopt en er zal een nieuw crematorium worden gebouwd in de stad Oostende om te voorzien in de groeiende vraag naar crematies. De bouw zal naar verwachting 18 maanden duren en beginnen op 1 april 2023.\",\n    \"votedOn\": \"20/02/2023\",\n    \"startDate\": \"01/04/2023\",\n    \"endDate\": \"01/10/2024\",\n    \"municipality\": \"Oostende\"\n    },{\n\"id\": \"05812d32-7f10-4631-b8db-ee7280975465\",\n\"title\": \"Samenwerking tussen gemeenten voor duurzaam waterbeheer\",\n\"body\": \"Er zal een samenwerking worden opgestart tussen verschillende gemeenten in de regio Brugge om het waterbeheer te verduurzamen. Het doel is om de kwaliteit van het oppervlaktewater te verbeteren en overstromingen te voorkomen. De samenwerking zal naar verwachting 5 jaar duren en start op 1 mei 2023.\",\n\"votedOn\": \"20/02/2023\",\n\"startDate\": \"01/05/2023\",\n\"endDate\": \"01/05/2028\",\n\"municipality\": \"Brugge\"\n},\n{\n\"id\": \"1a79b2a8-141d-407d-88c3-3a3a2608f2b2\",\n\"title\": \"Herinrichting van het stadspark met aandacht voor biodiversiteit\",\n\"body\": \"Er zal een herinrichting plaatsvinden van het stadspark in de stad Genk met als doel het vergroten van de biodiversiteit. Er zullen onder andere nieuwe bomen en struiken worden geplant en er komt een natuurspeeltuin voor kinderen. De werkzaamheden zullen naar verwachting 18 maanden duren en beginnen op 1 maart 2023.\",\n\"votedOn\": \"20/02/2023\",\n\"startDate\": \"01/03/2023\",\n\"endDate\": \"01/09/2024\",\n\"municipality\": \"Genk\"\n},\n{\n\"id\": \"f10b6792-531e-4397-b82e-eeef07f7d08f\",\n\"title\": \"Aanleg van nieuwe voetbalvelden en kleedkamers voor lokale sportclub\",\n\"body\": \"Er zullen nieuwe voetbalvelden en kleedkamers worden aangelegd voor de lokale sportclub in de stad Sint-Niklaas om te voorzien in de groeiende vraag naar sportfaciliteiten. De bouw zal naar verwachting 12 maanden duren en beginnen op 1 augustus 2023.\",\n\"votedOn\": \"20/02/2023\",\n\"startDate\": \"01/08/2023\",\n\"endDate\": \"01/08/2024\",\n\"municipality\": \"Sint-Niklaas\"\n}\n]"
+            }
+          ]
+        },
+        {
+          "name": "agenda_items/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiPath}}/agenda_items",
+              "host": ["{{apiPath}}"],
+              "path": ["agenda_items"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page with {{limit}} amount of agenda items. If page is not defined it shows everything",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "3",
+                  "description": "Amount of items per page",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": null,
+                  "description": "Minimum start date of items",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": null,
+                  "description": "Maximum end date of items",
+                  "disabled": true
+                },
+                {
+                  "key": "municipality",
+                  "value": "\"antwerpen\"",
+                  "description": "Municipality of item",
+                  "disabled": true
+                },
+                {
+                  "key": "decidedOn",
+                  "value": null,
+                  "description": "Date when vote took place",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "agenda_items/:id",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiPath}}/agenda_items/96aef788-9dd7-48d8-bd2d-29917c97f2a2",
+                  "host": ["{{apiPath}}"],
+                  "path": [
+                    "agenda_items",
+                    "96aef788-9dd7-48d8-bd2d-29917c97f2a2"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": null,
+              "cookie": [],
+              "body": " {\n    \"id\": \"96aef788-9dd7-48d8-bd2d-29917c97f2a2\",\n    \"title\": \"Herinrichting van de Marktstraat en omgeving in het centrum\",\n    \"body\": \"Er zal een herinrichting plaatsvinden van de Marktstraat en de omgeving in het centrum van de stad Mechelen om de verkeersveiligheid te verbeteren. De werkzaamheden zullen naar verwachting 12 maanden duren en beginnen op 1 juni 2023.\",\n    \"votedOn\": \"20/02/2023\",\n    \"startDate\": \"01/06/2023\",\n    \"endDate\": \"01/06/2024\",\n    \"municipality\": \"Mechelen\"\n    },"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "municipalities",
+      "item": [
+        {
+          "name": "municipalities",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "municipalities",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiPath}}/municipalities",
+                  "host": ["{{apiPath}}"],
+                  "path": ["municipalities"],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": null,
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": null,
+              "cookie": [],
+              "body": "[\n    {\n        \"name\": \"antwerpen\",\n        \"website\": \"https://antwerpen.be/agendapunten\"\n    }\n]"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiPath",
+      "value": "localhost:8080/api"
+    },
+    {
+      "key": "municipality",
+      "value": "antwerpen",
+      "type": "default"
+    }
+  ]
+}

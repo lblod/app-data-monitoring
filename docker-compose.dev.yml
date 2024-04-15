@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  identifier:
+    restart: "no"
+  dispatcher:
+    restart: "no"
+  # frontend:
+  #   restart: "no"
+  cache:
+    restart: "no"
+  resources:
+    restart: "no"
+  migrations:
+    restart: "no"
+  database:
+    restart: "no"
+  triplestore:
+    ports:
+      - "8890:8890"
+    restart: "no"
+  deltanotifier:
+    restart: "no"
+  uuid-generation:
+    environment:
+        RUN_CRON_JOBS: "true"
+        CRON_FREQUENCY: "0 * * * *"
+    restart: "no"
+  op-public-consumer:
+    environment:
+      # DCR_DISABLE_DELTA_INGEST: "false" # uncomment to enable data ingestion
+      # DCR_DISABLE_INITIAL_SYNC: "false" # uncomment to enable initial sync
+      SUDO_QUERY_RETRY: 'true'
+      SUDO_QUERY_RETRY_FOR_HTTP_STATUS_CODES: "404,500,503"
+      # BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES: "true"
+    restart: "no"
+  login:
+    restart: "no"
+  mocklogin:
+    image: lblod/mock-login-service:latest
+    links:
+      - database:database
+    restart: "no"
