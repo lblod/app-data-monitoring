@@ -1,6 +1,6 @@
-# Burgernabije Besluitendatabank (back-end)
+# Data monitoring tool (WIP) (back-end)
 
-The back-end for the Data Monitoring applications (DM), this is the scaffold of a project which needs to be built. The purpose of the data monitoring tool is to provide feedback to local administrators regarding the quality of the linked data they are publishing.
+The back-end for the Data Monitoring application (DM), this is the scaffold of a project which needs to be built. The purpose of the data monitoring tool is to provide feedback to local administrators regarding the quality of the linked data they are publishing.
 
 This project has different important moving parts:
 - The back-end (this repository). This is a docker-compose configuration that combines the front-end together with other services.
