@@ -12,12 +12,11 @@
  * @return {void} Nothing
  */
 async function dispatch(lib, data){
-    const { mu, muAuthSudo } = lib;
-    const { termObjectChangeSets } =  data;
-    
-    
+    // TODO: Make delta sync after successful initial sync
+    // const { mu, muAuthSudo } = lib;
+    // const { termObjectChangeSets } =  data;
 }
   
 module.exports = {
-dispatch
+    dispatch,
 };

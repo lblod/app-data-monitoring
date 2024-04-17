@@ -4,7 +4,7 @@ const {
   SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
   LANDING_ZONE_GRAPH,
   BATCH_SIZE,
-} = require('./config');
+} = require('./dm-config');
 
 const prefixes = `
 PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
@@ -54,7 +54,7 @@ ${batch}
 
     await operationWithRetry(insertCall, 0, maxAttempts, sleepTimeOnFail);
 
-    console.log(`Sleeping before next query execution: ${sleepBetweenBatches}`);
+    console.log(`OK. Sleeping before next query execution: ${sleepBetweenBatches}`);
     await new Promise(r => setTimeout(r, sleepBetweenBatches));
   }
 }
@@ -137,8 +137,6 @@ async function deleteFromPublicGraph(lib, statements) {
 }
 
 async function deleteFromSpecificGraphs(lib, statementsWithGraphs) {
-  
-
   for( let graph in statementsWithGraphs) {
     console.log(`Deleting ${statementsWithGraphs[graph].length} statements from ${graph} graph`);
     await batchedDbUpdate(
@@ -153,7 +151,6 @@ async function deleteFromSpecificGraphs(lib, statementsWithGraphs) {
       SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
       'DELETE');
   }
-  
 }
 
 async function moveToPublic(muUpdate, endpoint) {
@@ -192,10 +189,10 @@ async function moveTypeToPublic(muUpdate, endpoint, type) {
 
 module.exports = {
   batchedDbUpdate,
-  moveToOrganizationsGraph,
   moveToPublic,
   insertIntoPublicGraph,
   deleteFromPublicGraph,
   insertIntoSpecificGraphs,
   deleteFromSpecificGraphs,
+  prefixes,
 };

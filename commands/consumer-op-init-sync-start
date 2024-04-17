@@ -8,3 +8,5 @@ container_ip=$(docker inspect \
 curl -X POST $container_ip/initial-sync-jobs
 echo ""
 
+
+

@@ -19,38 +19,15 @@ defmodule Dispatcher do
   # Run `docker-compose restart dispatcher` after updating
   # this file.
 
-  #############################################################
-  # IMPORTANT NOTES
-  # It's a deliberate choice to not wire the
-  # mu-resource calls through mu-cache (at the moment)
-  # It seems under heavy load during consuming;
-  #  mu-resource can't handle all incoming delta's.
-  # So please keep this in mind.
-  # Probably the performance impact is limited; it's only
-  # in the detail-view; and often these are not cached anyhow
-  #############################################################
-
   ###############
   # RESOURCES
   ###############
-  get "/articles/*path", @any do
-    Proxy.forward conn, path, "http://resources/articles/"
-  end
-
   get "/administrative-units/*path", @any do
     Proxy.forward conn, path, "http://resources/administrative-units/"
   end
 
   get "/administrative-unit-classification-codes/*path", @any do
     Proxy.forward conn, path, "http://resources/administrative-unit-classification-codes/"
-  end
-
-  get "/agenda-item-handlings/*path", @any do
-    Proxy.forward conn, path, "http://resources/agenda-item-handlings/"
-  end
-
-  get "/agenda-items/*path", @any do
-    Proxy.forward conn, path, "http://resources/agenda-items/"
   end
 
   get "/governing-bodies/*path", @any do
@@ -65,24 +42,84 @@ defmodule Dispatcher do
     Proxy.forward conn, path, "http://resources/locations/"
   end
 
-  get "/mandataries/*path", @any do
-    Proxy.forward conn, path, "http://resources/mandataries/"
-  end
-
-  get "/memberships/*path", @any do
-    Proxy.forward conn, path, "http://resources/memberships/"
-  end
-
-  get "/resolutions/*path", @any do
-    Proxy.forward conn, path, "http://resources/resolutions/"
-  end
-
   get "/sessions/*path", @any do
     Proxy.forward conn, path, "http://resources/sessions/"
   end
 
-  get "/votes/*path", @any do
-    Proxy.forward conn, path, "http://resources/votes/"
+  match "/jobs/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/jobs/"
+  end
+
+  match "/tasks/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/tasks/"
+  end
+
+  match "/data-containers/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/data-containers/"
+  end
+
+  match "/job-errors/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/job-errors/"
+  end
+
+  match "/reports/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/reports/"
+  end
+
+  match "/administrative-units/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/administrative-units/"
+  end
+
+  match "/administrative-unit-classification-codes/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/administrative-unit-classification-codes/"
+  end
+
+  match "/organization-status-codes/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/organization-status-codes/"
+  end
+
+  match "/organizations/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/organizations/"
+  end
+
+  match "/identifiers/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/identifiers/"
+  end
+
+  match "/structured-identifiers/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/structured-identifiers/"
+  end
+
+  match "/addresses/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/addresses/"
+  end
+
+  match "/concepts/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/concepts/"
+  end
+
+  match "/locations/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resources/locations/"
+  end
+
+  match "/users/*path" do
+    Proxy.forward conn, path, "http://resources/users/"
+  end
+
+  match "/accounts", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, [], "http://resource/accounts/"
+  end
+
+  match "/groups/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://resource/administrative-units/"
+  end
+
+  match "/accounts/*path", %{ accept: [:json], layer: :api} do
+    Proxy.forward conn, path, "http://accountdetail/accounts/"
+  end
+
+  match "/mock/sessions/*path", %{ accept: [:any], layer: :api} do
+    Proxy.forward conn, path, "http://mocklogin/sessions/"
   end
 
   ###############
@@ -92,26 +129,6 @@ defmodule Dispatcher do
   # to generate uuids manually
   match "/uuid-generation/run/*_path", @json do
     Proxy.forward conn, [], "http://uuid-generation/run"
-  end
-
-  ###############################################################
-  # SEARCH
-  ###############################################################
-
-  match "/search/*path", @json do
-    Proxy.forward conn, path, "http://search/"
-  end
-
-  #################################################################
-  #  Exports
-  #################################################################
-
-  match "/generate-reports/*path", @any do
-    Proxy.forward conn, path, "http://report-generation/"
-  end
-
-  get "/download-exports/*path", @any do
-    Proxy.forward conn, path, "http://download-exports/"
   end
 
   ###############
@@ -127,6 +144,14 @@ defmodule Dispatcher do
 
   match "/*_path", @html do
     Proxy.forward conn, [], "http://frontend/index.html"
+  end
+
+  ###############################################################
+    # Login
+  ###############################################################
+
+  match "/sessions/*path" do
+    Proxy.forward conn, path, "http://login/sessions/"
   end
 
   #################

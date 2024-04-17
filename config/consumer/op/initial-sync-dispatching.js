@@ -1,8 +1,19 @@
-const { DCR_LANDING_ZONE_GRAPH } = require("config.js");
-const { batchedDbUpdate, moveToOrganizationsGraph, moveToPublic, transformLandingZoneGraph } = require('./util');
+const { 
+  DIRECT_DATABASE_ENDPOINT,
+  DCR_LANDING_ZONE_GRAPH,
+  MU_CALL_SCOPE_ID_INITIAL_SYNC,
+  BATCH_SIZE,
+  MAX_DB_RETRY_ATTEMPTS,
+  SLEEP_BETWEEN_BATCHES,
+  SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
+  TEST_DENNIS_SKIP_DB_UPDATE,
+} = require("./dm-config.js");
+const { batchedDbUpdate, moveToPublic, prefixes } = require('./dm-util');
 
-
-const endpoint = DIRECT_DATABASE_ENDPOINT; 
+// For initial sync use the direct endpoint always because... Why not?
+// May change in the future if there is a specific reason. Then a switch env var might be added.
+const endpoint = DIRECT_DATABASE_ENDPOINT;
+console.log(`Inital sync module loaded. Using endpoint:${endpoint}`);
 
 /**
  * Dispatch the fetched information to a target graph.
@@ -25,38 +36,37 @@ async function dispatch(lib, data) {
     // 1. Write the triples to the landing zone graph - withouth any mapping or filtering
     // 2. One-time reasoning run with the full landing zone graph and write the results to the target graph (on-finish)
     console.log(`Using ${endpoint} to insert triples`);
-    if (termObjects.length) {
+    if (termObjects.length && !TEST_DENNIS_SKIP_DB_UPDATE) {
         const originalInsertTriples = termObjects.map(o => `${o.subject} ${o.predicate} ${o.object}.`);
         // Insert into landing zone graph
         await batchedDbUpdate(
             muAuthSudo.updateSudo,
-            LANDING_ZONE_GRAPH,
+            DCR_LANDING_ZONE_GRAPH,
             originalInsertTriples,
             { 'mu-call-scope-id': MU_CALL_SCOPE_ID_INITIAL_SYNC },
             endpoint,
             BATCH_SIZE,
             MAX_DB_RETRY_ATTEMPTS,
             SLEEP_BETWEEN_BATCHES,
-            SLEEP_TIME_AFTER_FAILED_DB_OPERATION
+            SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
         );
     }
 }
 
-  
-  /**
-   * A callback you can override to do extra manipulations
-   *   after initial ingest.
-   * @param { mu, muAuthSudo, fech } lib - The provided libraries from the host service.
-   * @return {void} Nothing
-   */
-  async function onFinishInitialIngest(lib) {
-    console.log(`!! On-finish triggered.`);
-    const {mu, muAuthSudo, fech} = lib
-    // Move from ingest graph to public graph
-    // To be refined
-    await moveToPublic(muAuthSudo.updateSudo, endpoint)
-    // Create mock login users
-    await muAuthSudo.updateSudo(`
+/**
+ * A callback you can override to do extra manipulations
+ *   after initial ingest.
+ * @param { mu, muAuthSudo, fech } lib - The provided libraries from the host service.
+ * @return {void} Nothing
+ */
+async function onFinishInitialIngest(lib) {
+  console.log(`!! On-finish triggered.`);
+  const {mu, muAuthSudo, fech} = lib
+  // Move from ingest graph to public graph
+  // To be refined
+  await moveToPublic(muAuthSudo.updateSudo, endpoint)
+  // Create mock login users
+  await muAuthSudo.updateSudo(`
     ${prefixes}
     INSERT {
       GRAPH <http://mu.semte.ch/graphs/public> {
@@ -97,10 +107,9 @@ async function dispatch(lib, data) {
         BIND(IRI(CONCAT("http://mu.semte.ch/graphs/organizations/", ?adminUnitUuid)) AS ?g)
     }
   `, undefined, endpoint)
-
-  }
+}
   
-  module.exports = {
-    dispatch,
-    onFinishInitialIngest
-  };
+module.exports = {
+  dispatch,
+  onFinishInitialIngest
+};

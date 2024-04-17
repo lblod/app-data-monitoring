@@ -1,0 +1,281 @@
+{
+    "version": "0.1",
+    "prefixes": {
+        "org": "http://www.w3.org/ns/org#",
+        "locn": "http://www.w3.org/ns/locn#",
+        "schema": "http://schema.org/",
+        "regorg": "http://www.w3.org/ns/regorg#",
+        "person": "http://www.w3.org/ns/person#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "dbpedia": "http://dbpedia.org/ontology/",
+        "adms": "http://www.w3.org/ns/adms#",
+        "euro": "http://data.europa.eu/m8g/",
+        "prov": "http://www.w3.org/ns/prov#",
+        "organisatie": "https://data.vlaanderen.be/ns/organisatie#",
+        "persoon": "https://data.vlaanderen.be/ns/persoon#",
+        "adres": "https://data.vlaanderen.be/ns/adres#",
+        "generiek": "https://data.vlaanderen.be/ns/generiek#",
+        "mandaat": "http://data.vlaanderen.be/ns/mandaat#",
+        "besluit": "http://data.vlaanderen.be/ns/besluit#",
+        "lblodlg": "http://data.lblod.info/vocabularies/leidinggevenden/",
+        "lblodorg": "https://data.lblod.info/vocabularies/organisatie/",
+        "lblodgeneriek": "https://data.lblod.info/vocabularies/generiek/",
+        "dc_terms": "http://purl.org/dc/terms/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "euvoc": "http://publications.europa.eu/ontology/euvoc#",
+        "ere": "http://data.lblod.info/vocabularies/erediensten/",
+        "ch": "http://data.lblod.info/vocabularies/contacthub/",
+        "code": "http://lblod.data.gift/vocabularies/organisatie/",
+        "ext": "http://mu.semte.ch/vocabularies/ext/",
+        "geo": "http://www.opengis.net/ont/geosparql#",
+        "nacebel": "http://data.gift/vocabularies/nace-bel/",
+        "dct": "http://purl.org/dc/terms/"
+    },
+    "resources": {
+        "users": {
+            "name": "user",
+            "class": "foaf:Person",
+            "attributes": {
+                "first-name": {
+                    "type": "string",
+                    "predicate": "foaf:firstName"
+                },
+                "family-name": {
+                    "type": "string",
+                    "predicate": "foaf:familyName"
+                }
+            },
+            "relationships": {
+                "accounts": {
+                    "predicate": "foaf:account",
+                    "target": "account",
+                    "cardinality": "many"
+                },
+                "groups": {
+                    "predicate": "foaf:member",
+                    "target": "administrative-unit",
+                    "cardinality": "many"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/gebruiker/"
+        },
+        "accounts": {
+            "name": "account",
+            "class": "foaf:OnlineAccount",
+            "attributes": {
+                "provider": {
+                    "type": "string",
+                    "predicate": "foaf:accountServiceHomepage"
+                },
+                "identifier": {
+                    "type": "string",
+                    "predicate": "dct:identifier"
+                }
+            },
+            "relationships": {
+                "user": {
+                    "predicate": "foaf:account",
+                    "target": "user",
+                    "cardinality": "one",
+                    "inverse": true
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/account/"
+        },
+        "organizations": {
+            "name": "organization",
+            "class": "org:Organization",
+            "attributes": {
+                "name": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                },
+                "alternative-name": {
+                    "type": "string",
+                    "predicate": "skos:altLabel"
+                },
+                "expected-end-date": {
+                    "type": "date",
+                    "predicate": "lblodgeneriek:geplandeEindDatum"
+                },
+                "purpose": {
+                    "type": "string",
+                    "predicate": "org:purpose"
+                },
+                "is-city": {
+                    "type": "boolean",
+                    "predicate": "ext:isCity"
+                }
+            },
+            "relationships": {
+                "identifiers": {
+                    "predicate": "adms:identifier",
+                    "target": "identifier",
+                    "cardinality": "many"
+                },
+                "organization-status": {
+                    "predicate": "regorg:orgStatus",
+                    "target": "organization-status-code",
+                    "cardinality": "one"
+                },
+                "primary-site": {
+                    "predicate": "org:hasPrimarySite",
+                    "target": "site",
+                    "cardinality": "one"
+                },
+                "sites": {
+                    "predicate": "org:hasSite",
+                    "target": "site",
+                    "cardinality": "many"
+                },
+                "associated-organizations": {
+                    "predicate": "org:linkedTo",
+                    "target": "organization",
+                    "cardinality": "many"
+                },
+                "sub-organizations": {
+                    "predicate": "org:hasSubOrganization",
+                    "target": "organization",
+                    "cardinality": "many"
+                },
+                "is-associated-with": {
+                    "predicate": "org:linkedTo",
+                    "target": "organization",
+                    "cardinality": "one",
+                    "inverse": true
+                },
+                "is-sub-organization-of": {
+                    "predicate": "org:hasSubOrganization",
+                    "target": "organization",
+                    "cardinality": "one",
+                    "inverse": true
+                },
+                "changed-by": {
+                    "predicate": "org:originalOrganization",
+                    "target": "change-events",
+                    "cardinality": "many",
+                    "inverse": true
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/organisaties/"
+        },
+        "administrative-units": {
+            "name": "administrative-unit",
+            "class": "besluit:Bestuurseenheid",
+            "super": [
+                "organization"
+            ],
+            "relationships": {
+                "classification": {
+                    "predicate": "org:classification",
+                    "target": "administrative-unit-classification-code",
+                    "cardinality": "one"
+                },
+                "scope": {
+                    "predicate": "besluit:werkingsgebied",
+                    "target": "locations",
+                    "cardinality": "one"
+                },
+                "located-within": {
+                    "predicate": "geo:sfWithin",
+                    "target": "locations",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/bestuurseenheden/"
+        },
+        "identifiers": {
+            "name": "identifier",
+            "class": "adms:Identifier",
+            "attributes": {
+                "id-name": {
+                    "type": "string",
+                    "predicate": "skos:notation"
+                }
+            },
+            "relationships": {
+                "structured-identifier": {
+                    "predicate": "generiek:gestructureerdeIdentificator",
+                    "target": "structured-identifier",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/identificatoren/"
+        },
+        "structured-identifiers": {
+            "name": "structured-identifier",
+            "class": "generiek:GestructureerdeIdentificator",
+            "attributes": {
+                "local-id": {
+                    "type": "string",
+                    "predicate": "generiek:lokaleIdentificator"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/gestructureerdeIdentificatoren/"
+        },
+        "administrative-unit-classification-codes": {
+            "name": "administrative-unit-classification-code",
+            "class": "code:BestuurseenheidClassificatieCode",
+            "attributes": {
+                "label": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                }
+            },
+            "new-resource-base": "http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/"
+        },
+        "organization-status-codes": {
+            "name": "organization-status-code",
+            "class": "code:OrganisatieStatusCode",
+            "attributes": {
+                "label": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                }
+            },
+            "features": [
+                "include-uri"
+            ],
+            "new-resource-base": "http://lblod.data.gift/concepts/"
+        },
+        "locations": {
+            "class": "prov:Location",
+            "attributes": {
+                "label": {
+                    "type": "string",
+                    "predicate": "rdfs:label"
+                },
+                "level": {
+                    "type": "string",
+                    "predicate": "ext:werkingsgebiedNiveau"
+                }
+            },
+            "relationships": {
+                "administrative-units": {
+                    "predicate": "geo:sfWithin",
+                    "target": "administrative-units",
+                    "cardinality": "many",
+                    "inverse": true
+                },
+                "located-within": {
+                    "predicate": "geo:sfWithin",
+                    "target": "locations",
+                    "cardinality": "one"
+                },
+                "locations": {
+                    "predicate": "geo:sfWithin",
+                    "target": "locations",
+                    "cardinality": "many",
+                    "inverse": true
+                },
+                "exact-match": {
+                    "predicate": "skos:exactMatch",
+                    "target": "concept",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/werkingsgebieden/"
+        }
+    }
+}

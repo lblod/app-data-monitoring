@@ -163,11 +163,12 @@ services:
       DCR_DISABLE_INITIAL_SYNC: "true" # toggle this in override, leave 'true' in default docker-compose.yml
       DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
       DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
-      BATCH_SIZE: 250,
+      BATCH_SIZE: 10000,
+      SLEEP_BETWEEN_BATCHES: 0git,
+      TEST_DENNIS_SKIP_DB_UPDATE: "true"
     volumes:
       - ./data/files/consumer-files/op-public:/consumer-files/
       - ./config/consumer/op:/config/triples-dispatching/custom-dispatching
-
     restart: always
     logging: *default-logging
     labels:

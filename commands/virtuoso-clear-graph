@@ -1,0 +1,27 @@
+#!/bin/bash
+
+container_ip=$(docker inspect \
+  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+  app-data-monitoring-triplestore-1)
+graph_uri="$1"
+
+curl -XPOST \
+    -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+    -H 'Accept: text/plain,*/*;q=0.9' \
+    -H 'Accept-Encoding: gzip, deflate, br, zstd' \
+    -d \
+    "
+    DELETE {
+        GRAPH <$graph_uri> {
+            ?s ?p ?o .
+        }
+    }
+    WHERE {
+        GRAPH <$graph_uri> {
+            ?s ?p ?o .
+        }
+    }
+    " \
+    "$container_ip/sparql"
+echo ""
+
