@@ -26,7 +26,7 @@ services:
         RUN_CRON_JOBS: "true"
         CRON_FREQUENCY: "0 * * * *"
     restart: "no"
-  op-public-consumer:
+  op-consumer:
     environment:
       # DCR_DISABLE_DELTA_INGEST: "false" # uncomment to enable data ingestion
       # DCR_DISABLE_INITIAL_SYNC: "false" # uncomment to enable initial sync

@@ -30,11 +30,10 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>`;
 
 const contextConfig = {
   addTypes: {
-    scope: 'inserts', // 'inserts, 'deletes', 'all' or none. To add rdf:type to subjects of inserts, deletes or both
+    scope: 'none', // 'inserts, 'deletes', 'all' or none. To add rdf:type to subjects of inserts, deletes or both
     exhausitive: false // true or false: find all types for a subject, even if one is already present in delta
   },
-  contextQueries: [
-  ]
+  contextQueries: []
 };
 
 module.exports = {

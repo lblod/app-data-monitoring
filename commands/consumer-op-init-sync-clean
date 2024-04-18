@@ -2,7 +2,7 @@
 
 container_ip=$(docker inspect \
   -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-  app-data-monitoring-op-public-consumer-1)
+  app-data-monitoring-op-consumer-1)
 
 
 curl -X DELETE $container_ip/initial-sync-jobs

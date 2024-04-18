@@ -1,14 +1,18 @@
 const { 
-  DIRECT_DATABASE_ENDPOINT,
   DCR_LANDING_ZONE_GRAPH,
-  MU_CALL_SCOPE_ID_INITIAL_SYNC,
   BATCH_SIZE,
+  MU_CALL_SCOPE_ID_INITIAL_SYNC,
   MAX_DB_RETRY_ATTEMPTS,
   SLEEP_BETWEEN_BATCHES,
   SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
-  TEST_DENNIS_SKIP_DB_UPDATE,
+  LANDING_ZONE_DATABASE_ENDPOINT,
+  DIRECT_DATABASE_ENDPOINT,
 } = require("./dm-config.js");
-const { batchedDbUpdate, moveToPublic, prefixes } = require('./dm-util');
+const { 
+  batchedDbUpdate, 
+  moveToPublic, 
+  prefixes
+} = require('./dm-util');
 
 // For initial sync use the direct endpoint always because... Why not?
 // May change in the future if there is a specific reason. Then a switch env var might be added.
@@ -36,7 +40,7 @@ async function dispatch(lib, data) {
     // 1. Write the triples to the landing zone graph - withouth any mapping or filtering
     // 2. One-time reasoning run with the full landing zone graph and write the results to the target graph (on-finish)
     console.log(`Using ${endpoint} to insert triples`);
-    if (termObjects.length && !TEST_DENNIS_SKIP_DB_UPDATE) {
+    if (termObjects.length) {
         const originalInsertTriples = termObjects.map(o => `${o.subject} ${o.predicate} ${o.object}.`);
         // Insert into landing zone graph
         await batchedDbUpdate(
@@ -70,18 +74,6 @@ async function onFinishInitialIngest(lib) {
     ${prefixes}
     INSERT {
       GRAPH <http://mu.semte.ch/graphs/public> {
-        ?persoon a foaf:Person;
-                mu:uuid ?uuidPersoon;
-                foaf:firstName ?classificatie;
-                foaf:familyName ?naam;
-                foaf:member ?bestuurseenheid;
-                foaf:account ?account.
-        ?account a foaf:OnlineAccount;
-                mu:uuid ?uuidAccount;
-                foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "LoketLB-ContactOrganisatiegegevensGebruiker" . 
-      }
-      GRAPH ?g {
         ?persoon a foaf:Person;
                 mu:uuid ?uuidPersoon;
                 foaf:firstName ?classificatie;

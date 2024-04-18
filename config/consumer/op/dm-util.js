@@ -24,7 +24,19 @@ PREFIX locn: <http://www.w3.org/ns/locn#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX ext:<http://mu.semte.ch/vocabularies/ext/>
 `
-
+/**
+ * Batched db funtion copied from delta-notifier single graph util
+ * @param {(string):Promise<void>} muUpdate 
+ * @param {string} graph 
+ * @param {object[]} triples 
+ * @param {object} extraHeaders 
+ * @param {string} endpoint 
+ * @param {number} batchSize 
+ * @param {number} maxAttempts 
+ * @param {number} sleepBetweenBatches 
+ * @param {number} sleepTimeOnFail 
+ * @param {string} operation 
+ */
 async function batchedDbUpdate(
   muUpdate,
   graph,

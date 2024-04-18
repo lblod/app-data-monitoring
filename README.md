@@ -35,7 +35,7 @@ In this stage of development this application only consumes data from Organisati
 
 ```yml
 services:
-  op-public-consumer:
+  op-consumer:
    environment:
       DCR_SYNC_BASE_URL: "https://example.com/"
 ```
@@ -57,7 +57,7 @@ To be completed
 
 <!-- ### Sync data external data consumers
 The procedure below describes how to set up the sync for besluiten-consumer. 
-The procedures should be the similar for `op-public-consumer` and `mandatendatabank-consumer`. If there are variations in the steps for these consumers, it will be noted.
+The procedures should be the similar for `op-consumer` and `mandatendatabank-consumer`. If there are variations in the steps for these consumers, it will be noted.
 
 The synchronization of external data sources is a structured process divided into three key stages. The first stage, known as 'initial sync', requires manual interventions primarily due to performance considerations. Following this, there's a post-processing stage, where depending on the delta-consumer stream, it may be necessary to initiate certain background processes to ensure system consistency. The final stage involves transitioning the system to the 'normal operation' mode, wherein all functions are designed to be executed automatically.
 
@@ -155,7 +155,7 @@ services:
 - step 8: Run `docker-compose up -d`
 - step 9: This might take a while if `docker-compose logs besluiten-consumer |grep success Returns: Initial sync http://redpencil.data.gift/id/job/URI has been successfully run`; you should be good. (Your computer will also stop making noise)
 
-###### op-public-consumer & mandatendatabank-consumer
+###### op-consumer & mandatendatabank-consumer
 As of the time of writing, there is some overlap between the two data producers due to practical reasons. This issue will be resolved eventually. For the time being, if re-synchronization is required, it's advisable to re-sync both consumers.
 The procedure is identical to the one for besluiten-consumer, but with a bit of an extra synchronsation hassle. 
 For both consumers you will need to first run steps 1 up to and including step 5. Once these steps completed for both consumers, you can proceed and start ingesting the data again.
@@ -199,7 +199,7 @@ Ensure the flag `BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES` is set to `false` for **E
 - QA data: https://loket.lblod.info/
 - DEV data: https://dev.loket.lblod.info/
 
-##### op-public-consumer
+##### op-consumer
 
 - Production data: https://organisaties.abb.vlaanderen.be/
 - QA data: https://organisaties.abb.lblod.info/
