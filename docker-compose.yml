@@ -75,6 +75,16 @@ services:
     logging: *default-logging
     labels:
       - "logging=true"
+  accountdetail:
+    image: lblod/account-detail-service:0.1.0
+    labels:
+      - "logging=true"
+    environment:
+      MU_APPLICATION_GRAPH: "http://mu.semte.ch/graphs/public"
+    links:
+      - database:database
+    restart: always
+    logging: *default-logging
 
   # Allows running .sparql & .ttl files to the triplestore
   # https://github.com/mu-semtech/mu-migrations-service
@@ -150,7 +160,7 @@ services:
   op-consumer:
     image: lblod/delta-consumer:latest
     environment:
-      DCR_SYNC_BASE_URL: "https://organisaties.abb.lblod.info/"
+      DCR_SYNC_BASE_URL: "https://organisaties.abb.lblod.info/" # Copied from CLB
       DCR_SERVICE_NAME: "op-consumer"
       DCR_SYNC_FILES_PATH: "/sync/organizations-public-info/files"
       DCR_SYNC_DATASET_SUBJECT: "http://data.lblod.info/datasets/delta-producer/dumps/OrganizationsPublicInfoCacheGraphDump"
@@ -189,3 +199,19 @@ services:
       MU_APPLICATION_AUTH_CLIENT_ID: "tbd" # Later
       MU_APPLICATION_AUTH_REDIRECT_URI: "tbd" # From contactgegevens "https://contactgegevens-loket.lblod.info/authorization/callback"
       MU_APPLICATION_AUTH_CLIENT_SECRET: "secret"
+
+  # counting-service:
+  #   image: dennisvaneecke/dm-count-report-generation:latest
+  #   links:
+  #     - triplestore:database
+  #   volumes:
+  #     - ./config/clounting-service:/config
+  #   environment:
+  #     DISABLE_DEBUG_ENDPOINT: "false"
+  #     ADMIN_UNIT_ENDPOINT: "http://database:8890/sparql"
+  #     REPORT_ENDPOINT: "http://database:8890/sparql"
+
+  #   restart: always
+  #   logging: *default-logging
+  #   labels:
+  #     - "logging=true"

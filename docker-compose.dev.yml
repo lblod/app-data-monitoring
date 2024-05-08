@@ -11,6 +11,8 @@ services:
     restart: "no"
   resources:
     restart: "no"
+  accountdetail:
+    restart: "no"
   migrations:
     restart: "no"
   database:

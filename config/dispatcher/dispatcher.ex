@@ -12,114 +12,114 @@ defmodule Dispatcher do
   # In order to forward the 'themes' resource to the
   # resource service, use the following forward rule:
   #
-  # match "/themes/*path", @json do
-  #   Proxy.forward conn, path, "http://resource/themes/"
+  # match "/themes/*path", _ do
+  #   forward conn, path, "http://resource/themes/"
   # end
   #
   # Run `docker-compose restart dispatcher` after updating
   # this file.
 
   ###############
-  # RESOURCES
+  # resource
   ###############
-  get "/administrative-units/*path", @any do
-    Proxy.forward conn, path, "http://resources/administrative-units/"
+  get "/administrative-units/*path", _ do
+    forward conn, path, "http://resource/administrative-units/"
   end
 
-  get "/administrative-unit-classification-codes/*path", @any do
-    Proxy.forward conn, path, "http://resources/administrative-unit-classification-codes/"
+  get "/administrative-unit-classification-codes/*path", _ do
+    forward conn, path, "http://resource/administrative-unit-classification-codes/"
   end
 
-  get "/governing-bodies/*path", @any do
-    Proxy.forward conn, path, "http://resources/governing-bodies/"
+  get "/governing-bodies/*path", _ do
+    forward conn, path, "http://resource/governing-bodies/"
   end
 
-  get "/governing-body-classification-codes/*path", @any do
-    Proxy.forward conn, path, "http://resources/governing-body-classification-codes/"
+  get "/governing-body-classification-codes/*path", _ do
+    forward conn, path, "http://resource/governing-body-classification-codes/"
   end
 
-  get "/locations/*path", @any do
-    Proxy.forward conn, path, "http://resources/locations/"
+  get "/locations/*path", _ do
+    forward conn, path, "http://resource/locations/"
   end
 
-  get "/sessions/*path", @any do
-    Proxy.forward conn, path, "http://resources/sessions/"
+  get "/sessions/*path", _ do
+    forward conn, path, "http://resource/sessions/"
   end
 
-  match "/jobs/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/jobs/"
+  match "/jobs/*path", _ do
+    forward conn, path, "http://resource/jobs/"
   end
 
-  match "/tasks/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/tasks/"
+  match "/tasks/*path", _ do
+    forward conn, path, "http://resource/tasks/"
   end
 
-  match "/data-containers/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/data-containers/"
+  match "/data-containers/*path", _ do
+    forward conn, path, "http://resource/data-containers/"
   end
 
-  match "/job-errors/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/job-errors/"
+  match "/job-errors/*path", _ do
+    forward conn, path, "http://resource/job-errors/"
   end
 
-  match "/reports/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/reports/"
+  match "/reports/*path", _ do
+    forward conn, path, "http://resource/reports/"
   end
 
-  match "/administrative-units/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/administrative-units/"
+  match "/administrative-units/*path", _ do
+    forward conn, path, "http://resource/administrative-units/"
   end
 
-  match "/administrative-unit-classification-codes/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/administrative-unit-classification-codes/"
+  match "/administrative-unit-classification-codes/*path", _ do
+    forward conn, path, "http://resource/administrative-unit-classification-codes/"
   end
 
-  match "/organization-status-codes/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/organization-status-codes/"
+  match "/organization-status-codes/*path", _ do
+    forward conn, path, "http://resource/organization-status-codes/"
   end
 
-  match "/organizations/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/organizations/"
+  match "/organizations/*path", _ do
+    forward conn, path, "http://resource/organizations/"
   end
 
-  match "/identifiers/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/identifiers/"
+  match "/identifiers/*path", _ do
+    forward conn, path, "http://resource/identifiers/"
   end
 
-  match "/structured-identifiers/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/structured-identifiers/"
+  match "/structured-identifiers/*path", _ do
+    forward conn, path, "http://resource/structured-identifiers/"
   end
 
-  match "/addresses/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/addresses/"
+  match "/addresses/*path", _ do
+    forward conn, path, "http://resource/addresses/"
   end
 
-  match "/concepts/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/concepts/"
+  match "/concepts/*path", _ do
+    forward conn, path, "http://resource/concepts/"
   end
 
-  match "/locations/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resources/locations/"
+  match "/locations/*path", _ do
+    forward conn, path, "http://resource/locations/"
   end
 
   match "/users/*path" do
-    Proxy.forward conn, path, "http://resources/users/"
+    forward conn, path, "http://resource/users/"
   end
 
-  match "/accounts", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, [], "http://resource/accounts/"
+  match "/accounts", _ do
+    forward conn, [], "http://resource/accounts/"
   end
 
-  match "/groups/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://resource/administrative-units/"
+  match "/accounts/*path", _ do
+    forward conn, path, "http://accountdetail/accounts/"
   end
 
-  match "/accounts/*path", %{ accept: [:json], layer: :api} do
-    Proxy.forward conn, path, "http://accountdetail/accounts/"
+  match "/groups/*path", _ do
+    forward conn, path, "http://resource/administrative-units/"
   end
 
-  match "/mock/sessions/*path", %{ accept: [:any], layer: :api} do
-    Proxy.forward conn, path, "http://mocklogin/sessions/"
+  match "/mock/sessions/*path", _ do
+    forward conn, path, "http://mocklogin/sessions/"
   end
 
   ###############
@@ -127,31 +127,31 @@ defmodule Dispatcher do
   ###############
 
   # to generate uuids manually
-  match "/uuid-generation/run/*_path", @json do
-    Proxy.forward conn, [], "http://uuid-generation/run"
+  match "/uuid-generation/run/*_path", _ do
+    forward conn, [], "http://uuid-generation/run"
   end
 
   ###############
   # FRONTEND
   ###############
-  match "/assets/*path", @any do
-    Proxy.forward conn, path, "http://frontend/assets/"
+  match "/assets/*path", _ do
+    forward conn, path, "http://frontend/assets/"
   end
 
-  match "/@appuniversum/*path", @any do
-    Proxy.forward conn, path, "http://frontend/@appuniversum/"
+  match "/@appuniversum/*path", _ do
+    forward conn, path, "http://frontend/@appuniversum/"
   end
 
-  match "/*_path", @html do
-    Proxy.forward conn, [], "http://frontend/index.html"
+  match "/*_path", _ do
+    forward conn, [], "http://frontend/index.html"
   end
 
   ###############################################################
     # Login
   ###############################################################
 
-  match "/sessions/*path" do
-    Proxy.forward conn, path, "http://login/sessions/"
+  match "/sessions/*path", _ do
+    forward conn, path, "http://login/sessions/"
   end
 
   #################
