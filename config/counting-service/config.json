@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/lblod/dm-count-report-generation-service/master/config-schema.json",
+    "endpoints": [
+      {
+        "url": "https://qa.centrale-vindplaats.lblod.info/sparql",
+        "classes": [
+          "besluit:Besluit",
+          "besluit:Agendapunt",
+          "besluit:Ztting",
+          "besluit:Stemming"
+        ]
+      }
+    ]
+  }

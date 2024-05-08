@@ -22,6 +22,15 @@ defmodule Dispatcher do
   ###############
   # resource
   ###############
+  get "/admin-unit-count-reports/*path", _ do
+    forward conn, path, "http://resource/admin-unit-count-reports/"
+  end
+  get "/counts/*path", _ do
+    forward conn, path, "http://resource/counts/"
+  end
+  get "/governing-body-count-reports/*path", _ do
+    forward conn, path, "http://resource/governing-body-count-reports/"
+  end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"
   end
@@ -130,6 +139,11 @@ defmodule Dispatcher do
   match "/uuid-generation/run/*_path", _ do
     forward conn, [], "http://uuid-generation/run"
   end
+
+  # Report count debug endpoints
+  match "/counting-service/*path", _ do
+  forward conn, path, "http://counting-service/",
+
 
   ###############
   # FRONTEND

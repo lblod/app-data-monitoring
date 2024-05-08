@@ -1,0 +1,127 @@
+{
+    "version": "0.1",
+    "prefixes": {
+        "org": "http://www.w3.org/ns/org#",
+        "locn": "http://www.w3.org/ns/locn#",
+        "schema": "http://schema.org/",
+        "regorg": "http://www.w3.org/ns/regorg#",
+        "person": "http://www.w3.org/ns/person#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "dbpedia": "http://dbpedia.org/ontology/",
+        "adms": "http://www.w3.org/ns/adms#",
+        "euro": "http://data.europa.eu/m8g/",
+        "prov": "http://www.w3.org/ns/prov#",
+        "organisatie": "https://data.vlaanderen.be/ns/organisatie#",
+        "persoon": "https://data.vlaanderen.be/ns/persoon#",
+        "adres": "https://data.vlaanderen.be/ns/adres#",
+        "generiek": "https://data.vlaanderen.be/ns/generiek#",
+        "mandaat": "http://data.vlaanderen.be/ns/mandaat#",
+        "besluit": "http://data.vlaanderen.be/ns/besluit#",
+        "lblodlg": "http://data.lblod.info/vocabularies/leidinggevenden/",
+        "lblodorg": "https://data.lblod.info/vocabularies/organisatie/",
+        "lblodgeneriek": "https://data.lblod.info/vocabularies/generiek/",
+        "dc_terms": "http://purl.org/dc/terms/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "euvoc": "http://publications.europa.eu/ontology/euvoc#",
+        "ere": "http://data.lblod.info/vocabularies/erediensten/",
+        "ch": "http://data.lblod.info/vocabularies/contacthub/",
+        "code": "http://lblod.data.gift/vocabularies/organisatie/",
+        "ext": "http://mu.semte.ch/vocabularies/ext/",
+        "geo": "http://www.opengis.net/ont/geosparql#",
+        "nacebel": "http://data.gift/vocabularies/nace-bel/",
+        "dct": "http://purl.org/dc/terms/",
+        "time": "http://www.w3.org/2006/time#",
+        "datamonitoring": "http://lblod.data.gift/vocabularies/datamonitoring/",
+        "xsd":"http://www.w3.org/2001/XMLSchema#"
+    },
+    "resources": {
+        "governing-body-count-reports": {
+            "name":"governing-body-count-report",
+            "class": "datamonitoring:GoverningBodyCountReport",
+            "attributes": {
+                "uuid":{
+                    "type": "string",
+                    "predicate":"mu:uuid"
+                },
+                "createdAt":{
+                    "type": "datetime",
+                    "predicate":"datamonitoring:createdAt"
+                },
+                "day":{
+                    "type": "date",
+                    "predicate":"datamonitoring:day"
+                },
+                "prefLabel":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                }
+            },
+            "relationships": {
+                "admin-unit": {
+                    "predicate": "datamonitoring:targetAdminitrativeUnit",
+                    "target": "bestuurseenheid",
+                    "cardinality": "one"
+                },
+                "governing-body": {
+                    "predicate": "datamonitoring:targetGoverningBody",
+                    "target": "bestuursorgaan",
+                    "cardinality": "one"
+                },
+                "count": {
+                    "predicate":"datamonitoring:counts",
+                    "target":"count",
+                    "cardinality":"many"
+                }
+            }
+        },
+        "counts": {
+            "name":"count",
+            "class": "datamonitoring:Count",
+            "attributes": {
+                "prefLabel":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                },
+                "targetClass":{
+                    "type": "string",
+                    "predicate":"datamonitoring:targetClass"
+                },
+                "count":{
+                    "type": "number",
+                    "predicate":"datamonitoring:count"
+                }
+            }
+        },
+        "admin-unit-count-reports": {
+            "name":"admin-unit-count-report",
+            "class": "datamonitoring:AdminUnitCountReport",
+            "attributes": {
+                "prefLabel":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                },
+                "createdAt":{
+                    "type": "datetime",
+                    "predicate":"datamonitoring:createdAt"
+                },
+                "day":{
+                    "type": "date",
+                    "predicate":"datamonitoring:day"
+                }
+            },
+            "relationships": {
+                "admin-unit": {
+                    "predicate": "datamonitoring:targetAdminitrativeUnit",
+                    "target": "bestuurseenheid",
+                    "cardinality": "one"
+                },
+                "governing-body-count-report": {
+                    "predicate": "datamonitoring:goveringBodyReports",
+                    "target": "governing-body-count-report",
+                    "cardinality": "many"
+                }
+            }
+        }
+    }
+}

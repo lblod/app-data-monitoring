@@ -2,6 +2,7 @@ docker-compose.override.yml
 .vscode
 /data/db/*
 /data/files/*
+/data/files/report-ttl-dumps
 !/data/db/virtuoso.ini
 !/data/db/toLoad
 !/data/db/toLoad/*

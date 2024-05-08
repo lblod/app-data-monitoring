@@ -43,3 +43,8 @@ services:
     links:
       - database:database
     restart: "no"
+  counting-service:
+    restart: "no"
+    environment:
+      DISABLE_DEBUG_ENDPOINT: "false"
+      LOG_LEVEL: "silly"
