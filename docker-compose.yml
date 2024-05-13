@@ -203,16 +203,16 @@ services:
   counting-service:
     image: dennisvaneecke/dm-count-report-generation:latest # No woodpecker yet. So temporary
     volumes:
-      - ./config/clounting-service:/config
+      - ./config/counting-service:/config
       - ./data/report-ttl-dump:/dump
+    links:
+      - triplestore:triplestore
     environment:
       DISABLE_DEBUG_ENDPOINT: "true"
       ADMIN_UNIT_ENDPOINT: "http://triplestore:8890/sparql"
       REPORT_ENDPOINT: "http://triplestore:8890/sparql"
       REPORT_INVOCATION_TIME: "00:00"
       REPORT_INVOCATION_DAYS: "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
-      JOB_GRAPH_URI: "http://mu.semte.ch/graphs/public" # The default value
-      REPORT_GRAPH_URI: "http://mu.semte.ch/graphs/public" # The default value
     restart: always
     logging: *default-logging
     labels:

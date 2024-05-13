@@ -59,7 +59,7 @@ defmodule Acl.UserGroups.Config do
         },
         graphs: [
           %GraphSpec{
-            graph: "http://mu.semte.ch/graphs/dm-reports-adminunit",
+            graph: "http://mu.semte.ch/graphs/dm-reports",
             constraint: %ResourceConstraint{
               resource_types: [
                 "http://xmlns.com/foaf/0.1/OnlineAccount",
@@ -73,6 +73,9 @@ defmodule Acl.UserGroups.Config do
                 "http://www.w3.org/2004/02/skos/core#ConceptScheme",
                 "http://publications.europa.eu/ontology/euvoc#Country",
                 "http://www.w3.org/ns/prov#Location",
+                "http://lblod.data.gift/vocabularies/datamonitoring/GoverningBodyCountReport",
+                "http://lblod.data.gift/vocabularies/datamonitoring/Count",
+                "http://lblod.data.gift/vocabularies/datamonitoring/AdminUnitCountReport"
               ]
             },
           },
