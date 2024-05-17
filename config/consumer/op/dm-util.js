@@ -1,9 +1,15 @@
 const {
+  DCR_LANDING_ZONE_GRAPH,
+  LANDING_ZONE_GRAPH,
+  BATCH_SIZE,
+  MU_CALL_SCOPE_ID_INITIAL_SYNC,
   MAX_DB_RETRY_ATTEMPTS,
   SLEEP_BETWEEN_BATCHES,
   SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
-  LANDING_ZONE_GRAPH,
-  BATCH_SIZE,
+  LANDING_ZONE_DATABASE_ENDPOINT,
+  DIRECT_DATABASE_ENDPOINT,
+  BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES,
+  MU_SPARQL_ENDPOINT,
 } = require('./dm-config');
 
 const prefixes = `
@@ -105,7 +111,7 @@ async function insertIntoPublicGraph(lib, statements) {
     'http://mu.semte.ch/graphs/public',
     statements,
     {},
-    process.env.MU_SPARQL_ENDPOINT,
+    MU_SPARQL_ENDPOINT,
     BATCH_SIZE,
     MAX_DB_RETRY_ATTEMPTS,
     SLEEP_BETWEEN_BATCHES,
@@ -122,7 +128,7 @@ async function insertIntoSpecificGraphs(lib, statementsWithGraphs) {
       graph,
       statementsWithGraphs[graph],
       {},
-      process.env.MU_SPARQL_ENDPOINT,
+      MU_SPARQL_ENDPOINT,
       BATCH_SIZE,
       MAX_DB_RETRY_ATTEMPTS,
       SLEEP_BETWEEN_BATCHES,
@@ -140,7 +146,7 @@ async function deleteFromPublicGraph(lib, statements) {
     'http://mu.semte.ch/graphs/public',
     statements,
     {},
-    process.env.MU_SPARQL_ENDPOINT,
+    MU_SPARQL_ENDPOINT,
     BATCH_SIZE,
     MAX_DB_RETRY_ATTEMPTS,
     SLEEP_BETWEEN_BATCHES,
@@ -156,7 +162,7 @@ async function deleteFromSpecificGraphs(lib, statementsWithGraphs) {
       graph,
       statementsWithGraphs[graph],
       {},
-      process.env.MU_SPARQL_ENDPOINT,
+      MU_SPARQL_ENDPOINT,
       BATCH_SIZE,
       MAX_DB_RETRY_ATTEMPTS,
       SLEEP_BETWEEN_BATCHES,
@@ -169,6 +175,7 @@ async function moveToPublic(muUpdate, endpoint) {
   console.log('moving to public')
   await moveTypeToPublic(muUpdate, endpoint, 'code:BestuurseenheidClassificatieCode')
   await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuurseenheid')
+  await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuursorgaan')
   await moveTypeToPublic(muUpdate, endpoint, 'skos:Concept')
   await moveTypeToPublic(muUpdate, endpoint, 'euvoc:Country')
   await moveTypeToPublic(muUpdate, endpoint, 'prov:Location')
@@ -195,7 +202,8 @@ async function moveTypeToPublic(muUpdate, endpoint, type) {
       ?subject a ${type};
           ?pred ?obj.
     }
-  `, undefined, endpoint)
+  `, undefined, endpoint);
+  console.log(`MOVE TO PUBLIC SUCCEEDED!!! Successfully moved ${type}`)
 }
 
 

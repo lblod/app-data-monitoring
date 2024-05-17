@@ -174,7 +174,7 @@ services:
       DCR_BATCH_SIZE: 1000
       SLEEP_BETWEEN_BATCHES: 100
       BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES: "true"
-      INGEST_GRAPH: "http://mu.semte.ch/graphs/ingest"
+      INGEST_GRAPH: "©"
       DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
       DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
     volumes:
@@ -205,14 +205,11 @@ services:
     volumes:
       - ./config/counting-service:/config
       - ./data/report-ttl-dump:/dump
-    links:
-      - triplestore:triplestore
     environment:
       DISABLE_DEBUG_ENDPOINT: "true"
       ADMIN_UNIT_ENDPOINT: "http://triplestore:8890/sparql"
       REPORT_ENDPOINT: "http://triplestore:8890/sparql"
-      REPORT_INVOCATION_TIME: "00:00"
-      REPORT_INVOCATION_DAYS: "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+      ROOT_URL_PATH: '/counting-service' # debug relative links will be rendered as /count
     restart: always
     logging: *default-logging
     labels:

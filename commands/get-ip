@@ -1,0 +1,6 @@
+#!/bin/bash
+
+containerName="app-data-monitoring-$1-1"
+
+docker inspect \
+  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $containerName

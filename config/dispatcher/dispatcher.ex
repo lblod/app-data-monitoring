@@ -2,7 +2,8 @@ defmodule Dispatcher do
   use Matcher
   define_accept_types [
     html: [ "text/html", "application/xhtml+html" ],
-    json: [ "application/json", "application/vnd.api+json", "application/sparql-results+json" ]
+    json: [ "application/json", "application/vnd.api+json", "application/sparql-results+json" ],
+    text_event_stream: [ "text/event-stream" ]
   ]
 
   @any %{}
@@ -142,7 +143,13 @@ defmodule Dispatcher do
 
   # Report count debug endpoints
   match "/counting-service/*path", _ do
-  forward conn, path, "http://counting-service/",
+    forward conn, path, "http://counting-service/"
+  end
+
+# Report count debug endpoints
+  match "/favicon.ico", _ do
+    send_resp( conn, 500, "No favicon available." )
+  end
 
 
   ###############
