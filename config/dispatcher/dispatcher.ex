@@ -64,10 +64,6 @@ defmodule Dispatcher do
     forward conn, path, "http://resource/tasks/"
   end
 
-  match "/data-containers/*path", _ do
-    forward conn, path, "http://resource/data-containers/"
-  end
-
   match "/job-errors/*path", _ do
     forward conn, path, "http://resource/job-errors/"
   end
@@ -98,10 +94,6 @@ defmodule Dispatcher do
 
   match "/structured-identifiers/*path", _ do
     forward conn, path, "http://resource/structured-identifiers/"
-  end
-
-  match "/addresses/*path", _ do
-    forward conn, path, "http://resource/addresses/"
   end
 
   match "/concepts/*path", _ do

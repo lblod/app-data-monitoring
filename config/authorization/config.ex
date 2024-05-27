@@ -9,6 +9,23 @@ alias Acl.GraphSpec.Constraint.Resource.NoPredicates, as: NoPredicates
 alias Acl.GraphSpec.Constraint.Resource.AllPredicates, as: AllPredicates
 
 defmodule Acl.UserGroups.Config do
+  @public_type [
+    "http://www.w3.org/ns/org#Role",
+    "http://data.vlaanderen.be/ns/besluit#Bestuurseenheid",
+    "http://xmlns.com/foaf/0.1/Person",
+    "http://xmlns.com/foaf/0.1/OnlineAccount",
+    "http://www.w3.org/2004/02/skos/core#Concept",
+    "http://www.w3.org/ns/org#Organization",
+    "http://lblod.data.gift/vocabularies/organisatie/TypeVestiging",
+    "http://lblod.data.gift/vocabularies/organisatie/BestuurseenheidClassificatieCode",
+    "http://lblod.data.gift/vocabularies/organisatie/OrganisatieStatusCode",
+    "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+    "http://publications.europa.eu/ontology/euvoc#Country",
+    "http://www.w3.org/ns/prov#Location",
+    "http://lblod.data.gift/vocabularies/datamonitoring/GoverningBodyCountReport",
+    "http://lblod.data.gift/vocabularies/datamonitoring/Count",
+    "http://lblod.data.gift/vocabularies/datamonitoring/AdminUnitCountReport",
+  ]
   def user_groups do
     # These elements are walked from top to bottom.  Each of them may
     # alter the quads to which the current query applies.  Quads are
@@ -26,84 +43,49 @@ defmodule Acl.UserGroups.Config do
           %GraphSpec{
             graph: "http://mu.semte.ch/graphs/public",
             constraint: %ResourceConstraint{
-                resource_types: [
-                  "http://xmlns.com/foaf/0.1/OnlineAccount",
-                  "http://xmlns.com/foaf/0.1/Person",
-                ]
+                resource_types: @public_type,
               }
             },
-          %GraphSpec{
-            graph: "http://mu.semte.ch/graphs/sessions",
-            constraint: %ResourceFormatConstraint{
-                resource_prefix: "http://mu.semte.ch/sessions/",
-              }
-          }
         ]
       },
       # Local government administrator group spec
-      # Local governments need to be able to check their own data monitoring reports
-      %GroupSpec{
-        name: "admin-unit-admin-users",
-        useage: [:read, :write, :read_for_write],
-        access: %AccessByQuery{
-          vars: ["session_group_uuid"],
-          query: """
-            PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
-            PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
-            SELECT DISTINCT ?session_group WHERE {
-              <SESSION_ID>
-                ext:sessionGroup/mu:uuid ?session_group_uuid;
-                ext:sessionRole \"DM-AdminUnitAdministratorRole\".
-              }
-          """
-        },
-        graphs: [
-          %GraphSpec{
-            graph: "http://mu.semte.ch/graphs/dm-reports",
-            constraint: %ResourceConstraint{
-              resource_types: [
-                "http://xmlns.com/foaf/0.1/OnlineAccount",
-                "http://xmlns.com/foaf/0.1/Person",
-                "http://data.vlaanderen.be/ns/besluit#Bestuurseenheid",
-                "http://www.w3.org/ns/org#Organization",
-                "http://lblod.data.gift/vocabularies/organisatie/TypeVestiging",
-                "http://lblod.data.gift/vocabularies/organisatie/BestuurseenheidClassificatieCode",
-                "http://lblod.data.gift/vocabularies/organisatie/OrganisatieStatusCode",
-                "http://www.w3.org/2004/02/skos/core#Concept",
-                "http://www.w3.org/2004/02/skos/core#ConceptScheme",
-                "http://publications.europa.eu/ontology/euvoc#Country",
-                "http://www.w3.org/ns/prov#Location",
-                "http://lblod.data.gift/vocabularies/datamonitoring/GoverningBodyCountReport",
-                "http://lblod.data.gift/vocabularies/datamonitoring/Count",
-                "http://lblod.data.gift/vocabularies/datamonitoring/AdminUnitCountReport"
-              ]
-            },
-          },
-        ],
-      },
-      # ABB administrator group spec
-      # ABB administrators need to be able to access all local gov related reports as well as reports on the admin level
-      %GroupSpec{
-        name: "abb-admin-users",
-        useage: [:read, :write, :read_for_write],
-        access:  %AccessByQuery{
-          vars: ["session_group_uuid"],
-          query: """
-            PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
-            PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
-            SELECT DISTINCT ?session_group WHERE {
-              <SESSION_ID>
-                ext:sessionGroup/mu:uuid ?session_group_uuid;
-                ext:sessionRole \"DM-AbbAdministratorRole\".
-            }
-          """
-        },
-        graphs: [
-          %GraphSpec{
-            graph: "http://mu.semte.ch/graphs/dm-reports-overview"
-          }
-        ], # No restrictions
-      },
+      # # Local governments need to be able to check their own data monitoring reports
+      # %GroupSpec{
+      #   name: "admin-unit-admin-users",
+      #   useage: [:read, :write, :read_for_write],
+      #   access: %AccessByQuery{
+      #     vars: ["session_group"],
+      #     query: "
+      #       PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
+      #       PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
+      #       SELECT DISTINCT ?session_group WHERE {
+      #         <SESSION_ID> ext:sessionGroup/mu:uuid ?session_group;
+      #           ext:sessionRole \"DM-AdminUnitAdministratorRole\".
+      #     }"
+      #   },
+      #   graphs: [],
+      # },
+      # # ABB administrator group spec
+      # # ABB administrators need to be able to access all local gov related reports as well as reports on the admin level
+      # %GroupSpec{
+      #   name: "abb-admin-users",
+      #   useage: [:read, :write, :read_for_write],
+      #   access:  %AccessByQuery{
+      #     vars: ["session_group"],
+      #     query: "
+      #       PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
+      #       PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
+      #       SELECT DISTINCT ?session_group WHERE {
+      #         <SESSION_ID> ext:sessionGroup/mu:uuid ?session_group;
+      #           ext:sessionRole \"DM-AdminUnitAdministratorRole\".
+      #       }"
+      #   },
+      #   graphs: [
+      #     %GraphSpec{
+      #       graph: "http://mu.semte.ch/graphs/dm-reports-overview"
+      #     }
+      #   ], # No restrictions
+      # },
       %GraphCleanup{
         originating_graph: "http://mu.semte.ch/application",
         useage: [:write],

@@ -13,7 +13,8 @@ const {
 } = require("./dm-config.js");
 const { 
   batchedDbUpdate, 
-  moveToPublic, 
+  moveToPublic,
+  moveToOrganizationsGraph,
   prefixes
 } = require('./dm-util');
 
@@ -70,8 +71,9 @@ async function onFinishInitialIngest(lib) {
   console.log(`!! On-finish triggered.`);
   const {mu, muAuthSudo, fech} = lib
   // Move from ingest graph to public graph
-  // To be refined
-  await moveToPublic(muAuthSudo.updateSudo, endpoint)
+  
+  await moveToPublic(muAuthSudo.updateSudo, endpoint);
+  await moveToOrganizationsGraph(muAuthSudo.updateSudo, endpoint); // Crash
   // Create mock login users
   await muAuthSudo.updateSudo(`
     ${prefixes}
@@ -102,6 +104,12 @@ async function onFinishInitialIngest(lib) {
         BIND(IRI(CONCAT("http://mu.semte.ch/graphs/organizations/", ?adminUnitUuid)) AS ?g)
     }
   `, undefined, endpoint)
+
+  // Fix identifiers?
+  // Perhaps try query of Nordine. Perform research?
+  // Groeispurt? 5 sprint in growth spurt
+  // Last sprint is innovative sprint
+  
 }
   
 module.exports = {

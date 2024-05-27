@@ -206,6 +206,139 @@ async function moveTypeToPublic(muUpdate, endpoint, type) {
   console.log(`MOVE TO PUBLIC SUCCEEDED!!! Successfully moved ${type}`)
 }
 
+async function moveToOrganizationsGraph(muUpdate, endpoint) {
+
+  //Move identifiers
+  await muUpdate(`
+    ${prefixes}
+    DELETE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?identifier a adms:Identifier;
+        mu:uuid ?uuid;
+          skos:notation ?idName;
+          generiek:gestructureerdeIdentificator ?structuredId.
+      }
+    }
+    INSERT {
+      GRAPH ?g {
+        ?identifier a adms:Identifier;
+        mu:uuid ?uuid;
+          skos:notation ?idName;
+          generiek:gestructureerdeIdentificator ?structuredId.
+      }
+    }
+    WHERE {
+      ?adminUnit adms:identifier ?identifier.
+      ?adminUnit mu:uuid ?adminUnitUuid.
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?identifier a adms:Identifier;
+          mu:uuid ?uuid;
+            skos:notation ?idName;
+            generiek:gestructureerdeIdentificator ?structuredId.
+      }
+      BIND(IRI(CONCAT("http://mu.semte.ch/graphs/organizations/", ?adminUnitUuid)) AS ?g)
+
+    }
+  `, undefined, endpoint)
+
+  //Move identifiers
+  await muUpdate(`
+    ${prefixes}
+    DELETE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?structuredId a generiek:GestructureerdeIdentificator;
+          mu:uuid ?structuredUuid;
+          generiek:lokaleIdentificator ?localId.
+      }
+    }
+    INSERT {
+      GRAPH ?g {
+        ?structuredId a generiek:GestructureerdeIdentificator;
+          mu:uuid ?structuredUuid;
+          generiek:lokaleIdentificator ?localId.
+      }
+    }
+    WHERE {
+      GRAPH ?g {
+        ?identifier generiek:gestructureerdeIdentificator ?structuredId.
+      }
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?structuredId a generiek:GestructureerdeIdentificator;
+          mu:uuid ?structuredUuid;
+          generiek:lokaleIdentificator ?localId.
+      }
+    }
+  `, undefined, endpoint)
+
+  //Move worships to assure everyone gets also the type besturseenheid and organization
+  await muUpdate(`
+    ${prefixes}
+    DELETE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?subject a ?type;
+          ?pred ?obj.
+          
+      }
+    }
+    INSERT {
+      GRAPH <http://mu.semte.ch/graphs/public> {
+        ?subject a ?type;
+          a besluit:Bestuurseenheid;
+          ?pred ?obj.
+      }
+    }
+    WHERE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?subject a ?type;
+            ?pred ?obj.
+        VALUES ?type { <http://data.lblod.info/vocabularies/erediensten/BestuurVanDeEredienst> <http://data.lblod.info/vocabularies/erediensten/CentraalBestuurVanDeEredienst> }
+      }
+    }
+  `, undefined, endpoint)
+
+  //Create mock users
+  await muUpdate(`
+    ${prefixes}
+    INSERT {
+      GRAPH <http://mu.semte.ch/graphs/public> {
+        ?persoon a foaf:Person;
+                mu:uuid ?uuidPersoon;
+                foaf:firstName ?classificatie;
+                foaf:familyName ?naam;
+                foaf:member ?bestuurseenheid;
+                foaf:account ?account.
+        ?account a foaf:OnlineAccount;
+                mu:uuid ?uuidAccount;
+                foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
+                ext:sessionRole "LoketLB-OpenProcesHuisGebruiker" . 
+      }
+      GRAPH ?g {
+        ?persoon a foaf:Person;
+                mu:uuid ?uuidPersoon;
+                foaf:firstName ?classificatie;
+                foaf:familyName ?naam;
+                foaf:member ?bestuurseenheid;
+                foaf:account ?account.
+        ?account a foaf:OnlineAccount;
+                mu:uuid ?uuidAccount;
+                foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
+                ext:sessionRole "LoketLB-OpenProcesHuisGebruiker" . 
+      }
+    }
+    WHERE {
+        ?bestuurseenheid a besluit:Bestuurseenheid;
+          skos:prefLabel ?naam;
+          mu:uuid ?adminUnitUuid;
+          org:classification/skos:prefLabel ?classificatie.
+        BIND(CONCAT(?classificatie, " ", ?naam) as ?volledigeNaam)
+        BIND(MD5(?adminUnitUuid) as ?uuidPersoon)
+        BIND(MD5(CONCAT(?adminUnitUuid,"ACCOUNT")) as ?uuidAccount)
+        BIND(IRI(CONCAT("http://data.lblod.info/id/persoon/", ?uuidPersoon)) AS ?persoon)
+        BIND(IRI(CONCAT("http://data.lblod.info/id/account/", ?uuidAccount)) AS ?account)
+        BIND(IRI(CONCAT("http://mu.semte.ch/graphs/organizations/", ?adminUnitUuid)) AS ?g)
+    }
+  `, undefined, endpoint)
+}
 
 module.exports = {
   batchedDbUpdate,
@@ -214,5 +347,6 @@ module.exports = {
   deleteFromPublicGraph,
   insertIntoSpecificGraphs,
   deleteFromSpecificGraphs,
+  moveToOrganizationsGraph,
   prefixes,
 };
