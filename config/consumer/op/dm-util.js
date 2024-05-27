@@ -171,16 +171,60 @@ async function deleteFromSpecificGraphs(lib, statementsWithGraphs) {
   }
 }
 
-async function moveToPublic(muUpdate, endpoint) {
+async function moveToPublic(muUpdate, endpoint, limited) {
   console.log('moving to public')
   await moveTypeToPublic(muUpdate, endpoint, 'code:BestuurseenheidClassificatieCode')
-  await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuurseenheid')
+  await moveAdminUnitsToPublic(muUpdate, endpoint, limited)
   await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuursorgaan')
   await moveTypeToPublic(muUpdate, endpoint, 'skos:Concept')
   await moveTypeToPublic(muUpdate, endpoint, 'euvoc:Country')
   await moveTypeToPublic(muUpdate, endpoint, 'prov:Location')
   await moveTypeToPublic(muUpdate, endpoint, 'code:OrganisatieStatusCode')
+}
 
+/**
+ * Similar to moveTypeToPublic but special filter for admin units and only applied if the last parameter limit is true.
+ * @param { any } muUpdate 
+ * @param { any } endpoint 
+ * @param { boolean } limit 
+ */
+async function moveAdminUnitsToPublic(muUpdate, endpoint, limit) {
+  if (!limit) {
+    await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuurseenheid');
+    return;
+  }
+  await muUpdate(`
+    ${prefixes}
+    DELETE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?subject a besluit:Bestuurseenheid;
+          ?pred ?obj.
+      }
+    }
+    INSERT {
+      GRAPH <http://mu.semte.ch/graphs/public> {
+        ?subject a besluit:Bestuurseenheid;
+          ?pred ?obj.
+      }
+    }
+    WHERE {
+      VALUES (?classification ?classificationLabel) {
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000001> "Gemeente")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000000> "Provincie")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/36a82ba0-7ff1-4697-a9dd-2e94df73b721> "Autonoom gemeentebedrijf")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/80310756-ce0a-4a1b-9b8e-7c01b6cc7a2d> "Autonoom provinciebedrijf")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000002> "OCMW")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000003> "District")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/a3922c6d-425b-474f-9a02-ffb71a436bfc> "Politiezone")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/2ad46df5-5c79-4d67-84d5-604c1377231e> "PEVA gemeente")
+        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/088784b6-e188-48bf-b94f-94665f9e1f53> "PEVA provincie")
+      }
+      ?subject a besluit:Bestuurseenheid;
+        org:classification ?classification;
+        ?pred ?obj.
+    }
+  `, undefined, endpoint);
+  console.log(`MOVE TO PUBLIC SUCCEEDED!!! Successfully moved  besluit:Bestuurseenheid limited to specific classes.`)
 }
 
 async function moveTypeToPublic(muUpdate, endpoint, type) {

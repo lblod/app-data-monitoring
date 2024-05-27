@@ -10,6 +10,7 @@ const {
   DIRECT_DATABASE_ENDPOINT,
   BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES,
   MU_SPARQL_ENDPOINT,
+  LIMIT_ADMIN_UNIT_TYPES,
 } = require("./dm-config.js");
 const { 
   batchedDbUpdate, 
@@ -22,6 +23,11 @@ const {
 // May change in the future if there is a specific reason. Then a switch env var might be added.
 const endpoint = DIRECT_DATABASE_ENDPOINT;
 console.log(`Inital sync module loaded. Using endpoint:${endpoint}`);
+
+const limitTypes = ["true","on","1"].includes(LIMIT_ADMIN_UNIT_TYPES);
+if (!limitTypes && !["false","off","0"].includes(LIMIT_ADMIN_UNIT_TYPES)) {
+  throw new Error(`Illegal value for env var 'LIMIT_ADMIN_UNIT_TYPES' which is a boolean. Received "${LIMIT_ADMIN_UNIT_TYPES}"`);
+}
 
 /**
  * Dispatch the fetched information to a target graph.
@@ -72,7 +78,7 @@ async function onFinishInitialIngest(lib) {
   const {mu, muAuthSudo, fech} = lib
   // Move from ingest graph to public graph
   
-  await moveToPublic(muAuthSudo.updateSudo, endpoint);
+  await moveToPublic(muAuthSudo.updateSudo, endpoint, limitTypes);
   await moveToOrganizationsGraph(muAuthSudo.updateSudo, endpoint); // Crash
   // Create mock login users
   await muAuthSudo.updateSudo(`

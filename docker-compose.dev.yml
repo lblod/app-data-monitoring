@@ -35,6 +35,7 @@ services:
       SUDO_QUERY_RETRY: 'true'
       SUDO_QUERY_RETRY_FOR_HTTP_STATUS_CODES: "404,500,503"
       # BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES: "true"
+      LIMIT_ADMIN_UNIT_TYPES: "true"
     restart: "no"
   login:
     restart: "no"
