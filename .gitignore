@@ -9,3 +9,4 @@ docker-compose.override.yml
 Makefile
 /config/migrations/local/*
 todo.md
+harvester-commands
