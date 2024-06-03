@@ -230,6 +230,8 @@ services:
       REPORT_ENDPOINT: "http://triplestore:8890/sparql"
       ROOT_URL_PATH: '/counting-service' # debug relative links will be rendered as /count
       REPORT_GRAPH_URI: 'http://mu.semte.ch/graphs/public' # By default reports are public data
+      URI_PREFIX_RESOURCES: "http://data.lblod.info/id/" # Example count report uri: http://data.lblod.info/id/count-report/admin-unit-count-report/{uuid}
+      URI_PREFIX_NAMESPACES: "http://data.lblod.info/vocabularies/"
     restart: always
     logging: *default-logging
     labels:

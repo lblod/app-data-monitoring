@@ -10,5 +10,6 @@
 (read-domain-file "besluit-domain-en.lisp")
 (read-domain-file "mandaat-domain-en.lisp")
 (read-domain-file "accounts-domain.json")
+(read-domain-file "datamonitoring-domain.json")
 
 (setf *fetch-all-types-in-construct-queries* t)

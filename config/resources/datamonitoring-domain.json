@@ -44,7 +44,7 @@
                     "type": "string",
                     "predicate":"mu:uuid"
                 },
-                "createdAt":{
+                "created-at":{
                     "type": "datetime",
                     "predicate":"datamonitoring:createdAt"
                 },
@@ -52,20 +52,20 @@
                     "type": "date",
                     "predicate":"datamonitoring:day"
                 },
-                "prefLabel":{
+                "pref-label":{
                     "type": "string",
                     "predicate":"skos:prefLabel"
                 }
             },
             "relationships": {
-                "admin-unit": {
+                "administrative-unit": {
                     "predicate": "datamonitoring:targetAdminitrativeUnit",
-                    "target": "bestuurseenheid",
+                    "target": "administrative-unit",
                     "cardinality": "one"
                 },
                 "governing-body": {
                     "predicate": "datamonitoring:targetGoverningBody",
-                    "target": "bestuursorgaan",
+                    "target": "governing-body",
                     "cardinality": "one"
                 },
                 "count": {
@@ -73,17 +73,18 @@
                     "target":"count",
                     "cardinality":"many"
                 }
-            }
+            },
+            "new-resource-base": "http://data.lblod.info/id/count-report/governing-body-count-report/"
         },
         "counts": {
             "name":"count",
             "class": "datamonitoring:Count",
             "attributes": {
-                "prefLabel":{
+                "pref-label":{
                     "type": "string",
                     "predicate":"skos:prefLabel"
                 },
-                "targetClass":{
+                "target-class":{
                     "type": "string",
                     "predicate":"datamonitoring:targetClass"
                 },
@@ -91,17 +92,18 @@
                     "type": "number",
                     "predicate":"datamonitoring:count"
                 }
-            }
+            },
+            "new-resource-base": "http://data.lblod.info/id/count-report/count/"
         },
         "admin-unit-count-reports": {
             "name":"admin-unit-count-report",
             "class": "datamonitoring:AdminUnitCountReport",
             "attributes": {
-                "prefLabel":{
+                "pref-label":{
                     "type": "string",
                     "predicate":"skos:prefLabel"
                 },
-                "createdAt":{
+                "created-at":{
                     "type": "datetime",
                     "predicate":"datamonitoring:createdAt"
                 },
@@ -111,9 +113,9 @@
                 }
             },
             "relationships": {
-                "admin-unit": {
+                "administrative-unit": {
                     "predicate": "datamonitoring:targetAdminitrativeUnit",
-                    "target": "bestuurseenheid",
+                    "target": "administrative-unit",
                     "cardinality": "one"
                 },
                 "governing-body-count-report": {
@@ -121,7 +123,8 @@
                     "target": "governing-body-count-report",
                     "cardinality": "many"
                 }
-            }
+            },
+            "new-resource-base": "http://data.lblod.info/id/count-report/admin-unit-count-report/"
         }
     }
 }
