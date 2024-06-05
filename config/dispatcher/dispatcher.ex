@@ -138,7 +138,6 @@ defmodule Dispatcher do
     forward conn, path, "http://counting-service/"
   end
 
-# Report count debug endpoints
   match "/favicon.ico", _ do
     send_resp( conn, 500, "No favicon available." )
   end

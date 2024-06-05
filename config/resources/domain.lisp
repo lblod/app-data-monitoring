@@ -6,6 +6,8 @@
 ;; add the total amount of result in the response (meta.count)
 (defparameter *include-count-in-paginated-responses* t)
 (defparameter sparql:*query-log-types* '(:update :ask :query))
+(setf *supply-cache-headers-p* t)
+(setf *cache-model-properties-p* t)
 
 (read-domain-file "besluit-domain-en.lisp")
 (read-domain-file "mandaat-domain-en.lisp")

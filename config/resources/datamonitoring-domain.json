@@ -68,17 +68,17 @@
                     "target": "governing-body",
                     "cardinality": "one"
                 },
-                "count": {
-                    "predicate":"datamonitoring:counts",
-                    "target":"count",
+                "publication-count-report": {
+                    "predicate":"datamonitoring:publicationCountReports",
+                    "target":"publication-count-report",
                     "cardinality":"many"
                 }
             },
-            "new-resource-base": "http://data.lblod.info/id/count-report/governing-body-count-report/"
+            "new-resource-base": "http://data.lblod.info/id/"
         },
-        "counts": {
-            "name":"count",
-            "class": "datamonitoring:Count",
+        "publication-count-reports": {
+            "name":"publication-count-report",
+            "class": "datamonitoring:PublicationCountReport",
             "attributes": {
                 "pref-label":{
                     "type": "string",
@@ -93,7 +93,7 @@
                     "predicate":"datamonitoring:count"
                 }
             },
-            "new-resource-base": "http://data.lblod.info/id/count-report/count/"
+            "new-resource-base": "http://data.lblod.info/id/"
         },
         "admin-unit-count-reports": {
             "name":"admin-unit-count-report",
@@ -110,21 +110,26 @@
                 "day":{
                     "type": "date",
                     "predicate":"datamonitoring:day"
+                },
+                "uuid": {
+                    "type": "string",
+                    "predicate":"mu:uuid"
                 }
             },
             "relationships": {
                 "administrative-unit": {
-                    "predicate": "datamonitoring:targetAdminitrativeUnit",
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
                     "target": "administrative-unit",
                     "cardinality": "one"
                 },
                 "governing-body-count-report": {
-                    "predicate": "datamonitoring:goveringBodyReports",
+                    "predicate": "datamonitoring:governingBodyReports",
                     "target": "governing-body-count-report",
                     "cardinality": "many"
+                    
                 }
             },
-            "new-resource-base": "http://data.lblod.info/id/count-report/admin-unit-count-report/"
+            "new-resource-base": "http://data.lblod.info/id/"
         }
     }
 }

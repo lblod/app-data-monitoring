@@ -48,4 +48,5 @@ services:
     restart: "no"
     environment:
       DISABLE_DEBUG_ENDPOINT: "false"
+      ADD_DUMMY_REST_JOB_TEMPLATE: "true"
       LOG_LEVEL: "silly"
