@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ./commands/down
+source ./commands/remove-count-service-image
+source ./commands/up

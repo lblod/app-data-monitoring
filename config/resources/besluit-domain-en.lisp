@@ -2,7 +2,7 @@
 
 (define-resource administrative-unit ()
   :class (s-prefix "besluit:Bestuurseenheid")
-  :properties `((:name :string ,(s-prefix "skos:prefLabel")))
+  :properties `((:name :string ,(s-prefix "skos:prefLabel")) (:uuid :string ,(s-prefix "mu:uuid")))
   :has-one `((location :via ,(s-prefix "besluit:werkingsgebied")
                        :as "location")
              (administrative-unit-classification-code :via ,(s-prefix "besluit:classificatie")

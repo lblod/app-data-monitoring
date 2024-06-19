@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker container rm app-data-monitoring-counting-service-1
+docker image rm dennisvaneecke/dm-count-report-generation:latest

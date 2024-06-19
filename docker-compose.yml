@@ -4,6 +4,14 @@ version: "3.7"
 # Login and user related lechanisms were copied, updated and adapted from 'Contactgegevens loket'
 # All credits to the developers of these projects
 
+# Run these commands on a new virtuoso instance after deployment to make sure the SPARQL user can delete and insert (update). 
+  #  grant "SPARQL_UPDATE" to "SPARQL"
+  #  grant execute on "DB.DBA.L_O_LOOK" to "SPARQL";
+  #  grant execute on "DB.DBA.SPARQL_MODIFY_BY_QUAD_DICT_CONTENTS" to "SPARQL";
+  #  grant execute on "DB.DBA.SPARQL_MODIFY_BY_DICT_CONTENTS" to "SPARQL";
+  #  grant execute on "DB.DBA.SPARQL_INSERT_DICT_CONTENT" to "SPARQL";
+  #  grant execute on "DB.DBA.SPARQL_DELETE_DICT_CONTENT" to "SPARQL";
+
 x-logging: &default-logging
   driver: "json-file"
   options:
@@ -39,7 +47,7 @@ services:
     labels:
       - "logging=true"
 
-  # Front-end made for BNB
+  # Front-end
   # https://github.com/lblod/frontend-data-monitoring
   # frontend:
   #   image: lblod/frontend-data-monitoring:0.0.1
@@ -75,6 +83,7 @@ services:
     logging: *default-logging
     labels:
       - "logging=true"
+
   accountdetail:
     image: lblod/account-detail-service:0.1.0
     labels:
@@ -156,7 +165,7 @@ services:
 
   # Like many other ABB apps we require knowledge of the different admin units and governing bodies.
   # Op is the designated source of truth for that
-  # 
+
   op-consumer:
     image: lblod/delta-consumer:latest
     environment:
@@ -177,6 +186,7 @@ services:
       INGEST_GRAPH: "http://mu.semte.ch/graphs/ingest"
       DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
       DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
+      DCR_DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
     volumes:
       - ./data/files/consumer-files/op-public:/consumer-files/
       - ./data/files/consumer-files/op-public:/sync/organizations-public-info/files
@@ -200,18 +210,29 @@ services:
       MU_APPLICATION_AUTH_REDIRECT_URI: "tbd" # From contactgegevens "https://contactgegevens-loket.lblod.info/authorization/callback"
       MU_APPLICATION_AUTH_CLIENT_SECRET: "secret"
 
-  # counting-service:
-  #   image: dennisvaneecke/dm-count-report-generation:latest
-  #   links:
-  #     - triplestore:database
+  # reasoner: # OR QUERY
+  #   image: eyereasoner/reasoning-service:increased-stack-limit
   #   volumes:
-  #     - ./config/clounting-service:/config
-  #   environment:
-  #     DISABLE_DEBUG_ENDPOINT: "false"
-  #     ADMIN_UNIT_ENDPOINT: "http://database:8890/sparql"
-  #     REPORT_ENDPOINT: "http://database:8890/sparql"
-
+  #     - ./config/reasoner:/config
   #   restart: always
-  #   logging: *default-logging
   #   labels:
   #     - "logging=true"
+  #   logging: *default-logging
+
+  counting-service:
+    image: dennisvaneecke/dm-count-report-generation:latest # No woodpecker yet. So temporary
+    volumes:
+      - ./config/counting-service:/config
+      - ./data/report-ttl-dump:/dump
+    environment: 
+      DISABLE_DEBUG_ENDPOINT: "true"
+      ADMIN_UNIT_ENDPOINT: "http://triplestore:8890/sparql"
+      REPORT_ENDPOINT: "http://triplestore:8890/sparql"
+      ROOT_URL_PATH: '/counting-service' # debug relative links will be rendered as /count
+      REPORT_GRAPH_URI: 'http://mu.semte.ch/graphs/public' # By default reports are public data
+      URI_PREFIX_RESOURCES: "http://data.lblod.info/id/" # Example count report uri: http://data.lblod.info/id/count-report/admin-unit-count-report/{uuid}
+      URI_PREFIX_NAMESPACES: "http://lblod.data.gift/vocabularies/datamonitoring/"
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"

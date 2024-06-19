@@ -2,7 +2,8 @@ defmodule Dispatcher do
   use Matcher
   define_accept_types [
     html: [ "text/html", "application/xhtml+html" ],
-    json: [ "application/json", "application/vnd.api+json", "application/sparql-results+json" ]
+    json: [ "application/json", "application/vnd.api+json", "application/sparql-results+json" ],
+    text_event_stream: [ "text/event-stream" ]
   ]
 
   @any %{}
@@ -22,6 +23,15 @@ defmodule Dispatcher do
   ###############
   # resource
   ###############
+  get "/admin-unit-count-reports/*path", _ do
+    forward conn, path, "http://resource/admin-unit-count-reports/"
+  end
+  get "/counts/*path", _ do
+    forward conn, path, "http://resource/counts/"
+  end
+  get "/governing-body-count-reports/*path", _ do
+    forward conn, path, "http://resource/governing-body-count-reports/"
+  end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"
   end
@@ -54,10 +64,6 @@ defmodule Dispatcher do
     forward conn, path, "http://resource/tasks/"
   end
 
-  match "/data-containers/*path", _ do
-    forward conn, path, "http://resource/data-containers/"
-  end
-
   match "/job-errors/*path", _ do
     forward conn, path, "http://resource/job-errors/"
   end
@@ -88,10 +94,6 @@ defmodule Dispatcher do
 
   match "/structured-identifiers/*path", _ do
     forward conn, path, "http://resource/structured-identifiers/"
-  end
-
-  match "/addresses/*path", _ do
-    forward conn, path, "http://resource/addresses/"
   end
 
   match "/concepts/*path", _ do
@@ -130,6 +132,16 @@ defmodule Dispatcher do
   match "/uuid-generation/run/*_path", _ do
     forward conn, [], "http://uuid-generation/run"
   end
+
+  # Report count debug endpoints
+  match "/counting-service/*path", _ do
+    forward conn, path, "http://counting-service/"
+  end
+
+  match "/favicon.ico", _ do
+    send_resp( conn, 500, "No favicon available." )
+  end
+
 
   ###############
   # FRONTEND

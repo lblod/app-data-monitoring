@@ -1,0 +1,135 @@
+{
+    "version": "0.1",
+    "prefixes": {
+        "org": "http://www.w3.org/ns/org#",
+        "locn": "http://www.w3.org/ns/locn#",
+        "schema": "http://schema.org/",
+        "regorg": "http://www.w3.org/ns/regorg#",
+        "person": "http://www.w3.org/ns/person#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "dbpedia": "http://dbpedia.org/ontology/",
+        "adms": "http://www.w3.org/ns/adms#",
+        "euro": "http://data.europa.eu/m8g/",
+        "prov": "http://www.w3.org/ns/prov#",
+        "organisatie": "https://data.vlaanderen.be/ns/organisatie#",
+        "persoon": "https://data.vlaanderen.be/ns/persoon#",
+        "adres": "https://data.vlaanderen.be/ns/adres#",
+        "generiek": "https://data.vlaanderen.be/ns/generiek#",
+        "mandaat": "http://data.vlaanderen.be/ns/mandaat#",
+        "besluit": "http://data.vlaanderen.be/ns/besluit#",
+        "lblodlg": "http://data.lblod.info/vocabularies/leidinggevenden/",
+        "lblodorg": "https://data.lblod.info/vocabularies/organisatie/",
+        "lblodgeneriek": "https://data.lblod.info/vocabularies/generiek/",
+        "dc_terms": "http://purl.org/dc/terms/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "euvoc": "http://publications.europa.eu/ontology/euvoc#",
+        "ere": "http://data.lblod.info/vocabularies/erediensten/",
+        "ch": "http://data.lblod.info/vocabularies/contacthub/",
+        "code": "http://lblod.data.gift/vocabularies/organisatie/",
+        "ext": "http://mu.semte.ch/vocabularies/ext/",
+        "geo": "http://www.opengis.net/ont/geosparql#",
+        "nacebel": "http://data.gift/vocabularies/nace-bel/",
+        "dct": "http://purl.org/dc/terms/",
+        "time": "http://www.w3.org/2006/time#",
+        "datamonitoring": "http://lblod.data.gift/vocabularies/datamonitoring/",
+        "xsd":"http://www.w3.org/2001/XMLSchema#"
+    },
+    "resources": {
+        "governing-body-count-reports": {
+            "name":"governing-body-count-report",
+            "class": "datamonitoring:GoverningBodyCountReport",
+            "attributes": {
+                "uuid":{
+                    "type": "string",
+                    "predicate":"mu:uuid"
+                },
+                "created-at":{
+                    "type": "datetime",
+                    "predicate":"datamonitoring:createdAt"
+                },
+                "day":{
+                    "type": "date",
+                    "predicate":"datamonitoring:day"
+                },
+                "pref-label":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                }
+            },
+            "relationships": {
+                "administrative-unit": {
+                    "predicate": "datamonitoring:targetAdminitrativeUnit",
+                    "target": "administrative-unit",
+                    "cardinality": "one"
+                },
+                "governing-body": {
+                    "predicate": "datamonitoring:targetGoverningBody",
+                    "target": "governing-body",
+                    "cardinality": "one"
+                },
+                "publication-count-report": {
+                    "predicate":"datamonitoring:publicationCountReports",
+                    "target":"publication-count-report",
+                    "cardinality":"many"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
+        },
+        "publication-count-reports": {
+            "name":"publication-count-report",
+            "class": "datamonitoring:PublicationCountReport",
+            "attributes": {
+                "pref-label":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                },
+                "target-class":{
+                    "type": "string",
+                    "predicate":"datamonitoring:targetClass"
+                },
+                "count":{
+                    "type": "number",
+                    "predicate":"datamonitoring:count"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
+        },
+        "admin-unit-count-reports": {
+            "name":"admin-unit-count-report",
+            "class": "datamonitoring:AdminUnitCountReport",
+            "attributes": {
+                "pref-label":{
+                    "type": "string",
+                    "predicate":"skos:prefLabel"
+                },
+                "created-at":{
+                    "type": "datetime",
+                    "predicate":"datamonitoring:createdAt"
+                },
+                "day":{
+                    "type": "date",
+                    "predicate":"datamonitoring:day"
+                },
+                "uuid": {
+                    "type": "string",
+                    "predicate":"mu:uuid"
+                }
+            },
+            "relationships": {
+                "administrative-unit": {
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
+                    "target": "administrative-unit",
+                    "cardinality": "one"
+                },
+                "governing-body-count-report": {
+                    "predicate": "datamonitoring:governingBodyReports",
+                    "target": "governing-body-count-report",
+                    "cardinality": "many"
+                    
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
+        }
+    }
+}
