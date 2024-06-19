@@ -2,8 +2,9 @@
 
 The back-end for the Data Monitoring application (DM), this is the scaffold of a project which needs to be built. The purpose of the data monitoring tool is to provide feedback to local administrators regarding the quality of the linked data they are publishing.
 
-This project has different important moving parts:
+This project has different moving parts:
 - The back-end (this repository). This is a docker-compose configuration that combines the front-end together with other services.
+- A specific microservice called [The count report generation service](https://github.com/lblod/dm-count-report-generation-service) which will act as a PoC for the eventual microservice that will analyse newly published data?
 - The front-end (which is available in [the frontend-data-monitoring repo](https://github.com/lblod/frontend-data-monitoring)). This is an Ember frontend 
 
 The project has a basic mu-semtech structure now and some incomplete configuration. It has already been established there will be three kinds of users:
@@ -12,6 +13,39 @@ The project has a basic mu-semtech structure now and some incomplete configurati
 2. **Administrators of admin units** (i.e. local governments who are subject to policy enforcement by the Flemish Government): These users  will be required to log in using ACM/IDM and will be able to access reports which give an overview of the data quality of the linked data they publish
 3. **Administrators of publishing software** (nl.: 'notuleringspakketten'): These users  will be required to log in using ACM/IDM and will be able to access reports which give an overview of the data quality of the linked data their software publishes. In other words: they will be able to access aggregate reports of all the local governments they have provided with publishing software. The point of this is to help these suppliers improve the quality of their output and to point out quickly and efficiently where there are data quality issues.
 4. **Administrators of ABB**: These users  will be required to log in using ACM/IDM and will be able to access any report; including a general overview of all the published linked data. The point of this is to help ABB identify any local governments or software vendors which may be struggling with data quality and provide assistance and support.
+
+## Explanation of the data monitoring app
+
+Certain Flemish organizations(municipalities) liked to the government are obliged to publish some data in both human readable and electronic form. The format of the latter is linked data (RDF). These organizations use software from certain software suppliers (one of which may be ABB itself with gelinkt notuleren) which publishes the electronic data automatically. Given a published document one can use the soon to be released [Validation monitoring tool](https://github.com/lblod/frontend-validation-tool) and pass the url of a published document to it. This tool will then validate the schema of the published data and check if everything is present and correct.
+
+The data monitoring tool is conceptually represented here.
+
+
+![Image](./docs/image.png)
+
+This app consist of:
+* Standard mu-semtech: Frontend (ember, ember data, JSONAPI), identifier, dispatcher, ...
+* Virtuoso
+* 1 consumer consuming from [Organisatieportaal](https://github.com/lblod/app-organization-portal) (public admin units, governing bodies and other public data)
+* 4 consumers similar to [Lokaal beslist](https://github.com/lblod/app-burgernabije-besluitendatabank) consuming from the resolution harvesters
+* A data monitoring specific microservice called: [Count report generation service](https://github.com/lblod/dm-count-report-generation-service)
+
+The purpose of this app is to perform long running operations on newly published linked data. The count generation microservice is a PoC of this and it will evolve into a microservice that does validation similar to the validation monitoring tool. Each report operation gets triggered at midnight and put in a queue. It attempts to perform operations on the newly published data published that last day ('yesterday' after midnight).
+
+The operations consist of a great deal of SPARQL queries which generate report resources associated per day and per admin unit. Therefore a specific report generation function will generate a report per admin units (for sure for every one of the 300 municipalities in Flanders) and per day. These reports will be used by the front end so it can display useful pages which inform the user about the data quality and the evolution of data quality. The PoC 'count report generation' function will generate reports with the classes: `datamonitoring:AdminUnitCountReport`. The `datamonitoring` namespace has the prefix: `http://lblod.data.gift/vocabularies/datamonitoring/`.
+
+Each admin unit report is linked to governing body reports (`GoverningBodyCountReport`) which, of course, correspond with the associated abstract governing bodies of the admin unit (e.g. 'Gemeenteraad').
+
+Because the report service needs to operate on the newest linked data it needs to be able to access a database (using SPARQL) in order to query this data. Because of this 4 harvester consumer service have been added making a part of the database effectively a synchronized copy of Lokaal Beslist.
+
+Therefore the configured endpoint for the count generation service to read from is the database of the app itself. It will also write the reports to the same database. The majority of SPARQL queries will stay within the docker network of the app itself. Another PoC report generation function has been developed (broken for the moment) which performs SPARQL queries on the harvester apps to check the time when resources were last harvested.
+
+## Mock login and graphs
+
+Unlike Lokaal beslist the application will require users to log in and is not intended for the general public.
+
+There are three types of users:
+
 
 ## Tutorials
 You can run this app in a few different ways
@@ -29,7 +63,7 @@ cd app-data-monitoring
 
 #### Selecting endpoints
 
-In this stage of development this application only consumes data from Organisatie portaal (OP) because it needs a copy of the records associated with admin units (e.g. municipalities) and governing bodies (i.e. 'gemeenteraad'). The dispatching process will also generate mock login users for testing in the development environment.
+In this stage of development this application consumes data from Organisatie portaal (OP) because it needs a copy of the records associated with admin units (e.g. municipalities) and governing bodies (i.e. 'gemeenteraad'). The dispatching process will also generate mock login users for testing in the development environment.
 
 [You can view the existing endpoints here](#what-endpoints-can-be-used)
 
