@@ -32,6 +32,12 @@ defmodule Dispatcher do
   get "/governing-body-count-reports/*path", _ do
     forward conn, path, "http://resource/governing-body-count-reports/"
   end
+  get "/last-harvesting-execution-reports/*path", _ do
+    forward conn, path, "http://resource/last-harvesting-execution-reports/"
+  end
+  get "/last-harvesting-execution-records/*path", _ do
+    forward conn, path, "http://resource/last-harvesting-execution-records/"
+  end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"
   end
