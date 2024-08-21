@@ -4,13 +4,13 @@ version: "3.7"
 # Login and user related lechanisms were copied, updated and adapted from 'Contactgegevens loket'
 # All credits to the developers of these projects
 
-# Run these commands on a new virtuoso instance after deployment to make sure the SPARQL user can delete and insert (update). 
-  #  grant "SPARQL_UPDATE" to "SPARQL"
-  #  grant execute on "DB.DBA.L_O_LOOK" to "SPARQL";
-  #  grant execute on "DB.DBA.SPARQL_MODIFY_BY_QUAD_DICT_CONTENTS" to "SPARQL";
-  #  grant execute on "DB.DBA.SPARQL_MODIFY_BY_DICT_CONTENTS" to "SPARQL";
-  #  grant execute on "DB.DBA.SPARQL_INSERT_DICT_CONTENT" to "SPARQL";
-  #  grant execute on "DB.DBA.SPARQL_DELETE_DICT_CONTENT" to "SPARQL";
+# Run these commands on a new virtuoso instance after deployment to make sure the SPARQL user can delete and insert (update).
+#  grant "SPARQL_UPDATE" to "SPARQL"
+#  grant execute on "DB.DBA.L_O_LOOK" to "SPARQL";
+#  grant execute on "DB.DBA.SPARQL_MODIFY_BY_QUAD_DICT_CONTENTS" to "SPARQL";
+#  grant execute on "DB.DBA.SPARQL_MODIFY_BY_DICT_CONTENTS" to "SPARQL";
+#  grant execute on "DB.DBA.SPARQL_INSERT_DICT_CONTENT" to "SPARQL";
+#  grant execute on "DB.DBA.SPARQL_DELETE_DICT_CONTENT" to "SPARQL";
 
 x-logging: &default-logging
   driver: "json-file"
@@ -49,14 +49,14 @@ services:
 
   # Front-end
   # https://github.com/lblod/frontend-data-monitoring
-  # frontend:
-  #   image: lblod/frontend-data-monitoring:0.0.1
-  #   links:
-  #     - identifier
-  #   restart: always
-  #   logging: *default-logging
-  #   labels:
-  #     - "logging=true"
+  frontend:
+    image: lblod/frontend-data-monitoring:0.0.1
+    links:
+      - identifier
+    restart: always
+    logging: *default-logging
+    labels:
+      - "logging=true"
 
   # Proxy for mu-cl-resources that allows caching
   # https://github.com/mu-semtech/mu-cache
@@ -181,7 +181,7 @@ services:
       DCR_DISABLE_DELTA_INGEST: "true"
       DCR_ENABLE_DELTA_CONTEXT: "true"
       DCR_BATCH_SIZE: 1000
-      SLEEP_BETWEEN_BATCHES: 100
+      # SLEEP_BETWEEN_BATCHES: 100
       BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES: "true"
       INGEST_GRAPH: "http://mu.semte.ch/graphs/ingest"
       DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
@@ -224,7 +224,7 @@ services:
     volumes:
       - ./config/counting-service:/config
       - ./data/report-ttl-dump:/dump
-    environment: 
+    environment:
       DISABLE_DEBUG_ENDPOINT: "true"
       ADMIN_UNIT_ENDPOINT: "http://triplestore:8890/sparql"
       REPORT_ENDPOINT: "http://triplestore:8890/sparql"

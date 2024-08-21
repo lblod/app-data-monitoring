@@ -10,3 +10,4 @@ Makefile
 /config/migrations/local/*
 todo.md
 harvester-commands
+.env

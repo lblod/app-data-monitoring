@@ -5,8 +5,8 @@ services:
     restart: "no"
   dispatcher:
     restart: "no"
-  # frontend:
-  #   restart: "no"
+  frontend:
+    restart: "no"
   cache:
     restart: "no"
   resources:
@@ -18,15 +18,15 @@ services:
   database:
     restart: "no"
   triplestore:
-    ports:
-      - "8890:8890"
+    # ports:
+    #   - "8888:8890"
     restart: "no"
   deltanotifier:
     restart: "no"
   uuid-generation:
     environment:
-        RUN_CRON_JOBS: "true"
-        CRON_FREQUENCY: "0 * * * *"
+      RUN_CRON_JOBS: "true"
+      CRON_FREQUENCY: "0 * * * *"
     restart: "no"
   op-consumer:
     environment:
