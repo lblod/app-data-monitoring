@@ -113,12 +113,11 @@ services:
   # SPARQL Endpoint authorization service. Adds an authentication layer to the triplestore
   # https://github.com/mu-semtech/mu-authorization
   database:
-    image: semtech/mu-authorization:0.6.0-beta.8
+    image: semtech/sparql-parser:0.0.7
     environment:
       MU_SPARQL_ENDPOINT: "http://triplestore:8890/sparql"
-      ERROR_ON_UNWRITTEN_DATA: "on"
     volumes:
-      - ./config/authorization:/config
+      - ./config/cl-authorization:/config
     restart: always
     logging: *default-logging
     labels:
