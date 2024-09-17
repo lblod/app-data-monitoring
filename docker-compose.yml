@@ -219,7 +219,7 @@ services:
   #   logging: *default-logging
 
   counting-service:
-    image: dennisvaneecke/dm-count-report-generation:latest # No woodpecker yet. So temporary
+    image: lblod/dm-count-report-generation:latest
     volumes:
       - ./config/counting-service:/config
       - ./data/report-ttl-dump:/dump

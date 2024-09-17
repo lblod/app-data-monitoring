@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo rm ./data/db/*
-sudo rm ./data/db/.dba_pwd_set
-sudo rm -R ./data/files/consumer-files/op-public/
+sudo rm -rf ./data/db/*
+sudo rm -f ./data/db/.dba_pwd_set
+sudo rm -rf ./data/files/consumer-files/op-public/
