@@ -53,6 +53,13 @@ services:
     image: lblod/frontend-data-monitoring:0.0.1
     links:
       - identifier
+    environment:
+      EMBER_OAUTH_API_REDIRECT_URL: "https://datamonitoring.lblod.info/authorization/callback"
+      EMBER_OAUTH_API_KEY: "tbd"
+      EMBER_OAUTH_API_BASE_URL: "https://authenticatie-ti.vlaanderen.be/op/v1/auth"
+      EMBER_OAUTH_API_LOGOUT_URL: "https://authenticatie-ti.vlaanderen.be/op/v1/logout"
+      EMBER_OAUTH_API_SCOPE: "tbd"
+      EMBER_OAUTH_SWITCH_URL: "https://datamonitoring.lblod.info/authorization/switch"
     restart: always
     logging: *default-logging
     labels:
@@ -205,8 +212,8 @@ services:
       MU_APPLICATION_AUTH_ROLE_CLAIM: "abb_datamonitoringapp_rol_3d"
       MU_APPLICATION_GRAPH: "http://mu.semte.ch/graphs/public"
       MU_APPLICATION_AUTH_DISCOVERY_URL: "https://authenticatie-ti.vlaanderen.be/op"
-      MU_APPLICATION_AUTH_CLIENT_ID: "tbd" # Later
-      MU_APPLICATION_AUTH_REDIRECT_URI: "tbd" # From contactgegevens "https://contactgegevens-loket.lblod.info/authorization/callback"
+      MU_APPLICATION_AUTH_CLIENT_ID: "tbd"
+      MU_APPLICATION_AUTH_REDIRECT_URI: "https://datamonitoring.lblod.info/authorization/callback"
       MU_APPLICATION_AUTH_CLIENT_SECRET: "secret"
 
   # reasoner: # OR QUERY
