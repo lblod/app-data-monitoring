@@ -55,7 +55,6 @@ services:
       - identifier
     environment:
       EMBER_OAUTH_API_REDIRECT_URL: "https://datamonitoring.lblod.info/authorization/callback"
-      EMBER_OAUTH_API_KEY: "tbd"
       EMBER_OAUTH_API_BASE_URL: "https://authenticatie-ti.vlaanderen.be/op/v1/auth"
       EMBER_OAUTH_API_LOGOUT_URL: "https://authenticatie-ti.vlaanderen.be/op/v1/logout"
       EMBER_OAUTH_API_SCOPE: "tbd"
