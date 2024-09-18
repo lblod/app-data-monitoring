@@ -1,4 +1,5 @@
 docker-compose.override.yml
+docker-compose.dev.harvesters.yml
 .vscode
 /data/db/*
 /data/files/*
