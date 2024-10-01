@@ -3,7 +3,8 @@ defmodule Dispatcher do
   define_accept_types [
     html: [ "text/html", "application/xhtml+html" ],
     json: [ "application/json", "application/vnd.api+json", "application/sparql-results+json" ],
-    text_event_stream: [ "text/event-stream" ]
+    text_event_stream: [ "text/event-stream" ],
+    sparql: [ "application/sparql-results+json" ],
   ]
 
   @any %{}
@@ -23,6 +24,10 @@ defmodule Dispatcher do
   ###############
   # resource
   ###############
+  match "/sparql/*path" do
+    Proxy.forward conn, path, "http://triplestore:8890/sparql/"
+  end
+
   get "/admin-unit-count-reports/*path", _ do
     forward conn, path, "http://resource/admin-unit-count-reports/"
   end
@@ -37,6 +42,9 @@ defmodule Dispatcher do
   end
   get "/last-harvesting-execution-records/*path", _ do
     forward conn, path, "http://resource/last-harvesting-execution-records/"
+  end
+  get "/maturity-level-reports/*path", _ do
+    forward conn, path, "http://resource/maturity-level-reports/"
   end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"

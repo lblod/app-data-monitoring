@@ -189,6 +189,40 @@
                 }
             },
             "new-resource-base": "http://data.lblod.info/id/"
+        },
+        "maturity-level-reports": {
+            "name": "maturity-level-report",
+            "class": "datamonitoring:MaturityLevelReport",
+            "attributes": {
+                "uuid": {
+                    "type": "string",
+                    "predicate": "mu:uuid"
+                },
+                "day": {
+                    "type": "date",
+                    "predicate": "datamonitoring:day"
+                },
+                "pref-label": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                },
+                "created-at": {
+                    "type": "datetime",
+                    "predicate": "datamonitoring:createdAt"
+                },
+                "notule-uri": {
+                    "type": "string",
+                    "predicate": "datamonitoring:notuleUri"
+                }
+            },
+            "relationships": {
+                "administrative-unit": {
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
+                    "target": "administrative-unit",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
         }
     }
 }
