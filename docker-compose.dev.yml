@@ -18,8 +18,8 @@ services:
   database:
     restart: "no"
   triplestore:
-    # ports:
-    #   - "8888:8890"
+    ports:
+      - "8888:8890"
     restart: "no"
   deltanotifier:
     restart: "no"
