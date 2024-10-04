@@ -46,6 +46,9 @@ defmodule Dispatcher do
   get "/maturity-level-reports/*path", _ do
     forward conn, path, "http://resource/maturity-level-reports/"
   end
+  get "/session-timestamp-reports/*path", _ do
+    forward conn, path, "http://resource/session-timestamp-reports/"
+  end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"
   end
