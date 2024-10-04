@@ -223,6 +223,44 @@
                 }
             },
             "new-resource-base": "http://data.lblod.info/id/"
+        },
+        "session-timestamp-reports": {
+            "name": "session-timestamp-report",
+            "class": "datamonitoring:SessionTimestampReport",
+            "attributes": {
+                "uuid": {
+                    "type": "string",
+                    "predicate": "mu:uuid"
+                },
+                "day": {
+                    "type": "date",
+                    "predicate": "datamonitoring:day"
+                },
+                "pref-label": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                },
+                "created-at": {
+                    "type": "datetime",
+                    "predicate": "datamonitoring:createdAt"
+                },
+                "first-session": {
+                    "type": "datetime",
+                    "predicate": "datamonitoring:firstSession"
+                },
+                "last-session": {
+                    "type": "datetime",
+                    "predicate": "datamonitoring:lastSession"
+                }
+            },
+            "relationships": {
+                "administrative-unit": {
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
+                    "target": "administrative-unit",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
         }
     }
 }
