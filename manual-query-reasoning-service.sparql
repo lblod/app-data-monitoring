@@ -1,0 +1,64 @@
+# this query must run after the initial sync finishes
+# the reasoner fails at doing this right now unfortunately
+
+PREFIX adms: <http://www.w3.org/ns/adms#>
+PREFIX adres: <https://data.vlaanderen.be/ns/adres#>
+PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
+PREFIX crypto: <http://www.w3.org/2000/10/swap/crypto#>
+PREFIX e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>
+PREFIX ex: <http://example.org/test#>
+PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX func: <http://www.w3.org/2007/rif-builtin-function#>
+PREFIX generiek: <https://data.vlaanderen.be/ns/generiek#>
+PREFIX log: <http://www.w3.org/2000/10/swap/log#>
+PREFIX mandaat: <http://data.vlaanderen.be/ns/mandaat#>
+PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
+PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX persoon: <https://data.vlaanderen.be/ns/persoon#>
+PREFIX persoon_loket: <http://data.vlaanderen.be/ns/persoon#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+INSERT {
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?bestuurseenheid dcterms:identifier ?ovoNummer .
+  }
+}
+WHERE {
+    ?identifier skos:notation "OVO-nummer" ;
+                generiek:gestructureerdeIdentificator ?gestructureerdeIdentificator .
+    ?gestructureerdeIdentificator generiek:lokaleIdentificator ?ovoNummer .
+    ?bestuurseenheid adms:identifier ?identifier .
+} ;
+
+INSERT {
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?bestuurseenheid dcterms:identifier ?ovoNummer .
+  }
+}
+WHERE {
+    ?identifier skos:notation "KBO nummer" ;
+                generiek:gestructureerdeIdentificator ?gestructureerdeIdentificator .
+    ?gestructureerdeIdentificator generiek:lokaleIdentificator ?ovoNummer .
+    ?bestuurseenheid adms:identifier ?identifier .
+} ;
+
+# this part shouldn't be needed, uncomment if it is not working
+INSERT {
+ GRAPH <http://mu.semte.ch/graphs/public> {
+   ?group a <http://data.vlaanderen.be/ns/besluit#Bestuurseenheid> ;
+          mu:uuid ?groupId ; dcterms:identifier ?identifier .
+ }
+}
+WHERE {
+ GRAPH ?g {
+   ?group a <http://data.vlaanderen.be/ns/besluit#Bestuurseenheid> ;
+          mu:uuid ?groupId .
+ }
+ GRAPH ?g2 {
+   ?group dcterms:identifier ?identifier .
+ }
+}
