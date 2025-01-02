@@ -21,6 +21,14 @@ defmodule Dispatcher do
   # Run `docker-compose restart dispatcher` after updating
   # this file.
 
+  ###############################################################
+    # Login
+  ###############################################################
+
+  match "/sessions/*path" do
+    Proxy.forward conn, path, "http://login/sessions/"
+  end
+
   ###############
   # resource
   ###############
@@ -67,10 +75,6 @@ defmodule Dispatcher do
 
   get "/locations/*path", _ do
     forward conn, path, "http://resource/locations/"
-  end
-
-  get "/sessions/*path", _ do
-    forward conn, path, "http://resource/sessions/"
   end
 
   match "/jobs/*path", _ do
@@ -175,13 +179,6 @@ defmodule Dispatcher do
     forward conn, [], "http://frontend/index.html"
   end
 
-  ###############################################################
-    # Login
-  ###############################################################
-
-  match "/sessions/*path", _ do
-    forward conn, path, "http://login/sessions/"
-  end
 
   #################
   # NOT FOUND

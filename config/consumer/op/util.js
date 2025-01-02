@@ -1,16 +1,10 @@
 const {
-  DCR_LANDING_ZONE_GRAPH,
-  LANDING_ZONE_GRAPH,
-  BATCH_SIZE,
-  MU_CALL_SCOPE_ID_INITIAL_SYNC,
   MAX_DB_RETRY_ATTEMPTS,
   SLEEP_BETWEEN_BATCHES,
   SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
-  LANDING_ZONE_DATABASE_ENDPOINT,
-  DIRECT_DATABASE_ENDPOINT,
-  BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES,
-  MU_SPARQL_ENDPOINT,
-} = require('./dm-config');
+  LANDING_ZONE_GRAPH,
+  BATCH_SIZE,
+} = require('./config');
 
 const prefixes = `
 PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
@@ -30,19 +24,7 @@ PREFIX locn: <http://www.w3.org/ns/locn#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX ext:<http://mu.semte.ch/vocabularies/ext/>
 `
-/**
- * Batched db funtion copied from delta-notifier single graph util
- * @param {(string):Promise<void>} muUpdate 
- * @param {string} graph 
- * @param {object[]} triples 
- * @param {object} extraHeaders 
- * @param {string} endpoint 
- * @param {number} batchSize 
- * @param {number} maxAttempts 
- * @param {number} sleepBetweenBatches 
- * @param {number} sleepTimeOnFail 
- * @param {string} operation 
- */
+
 async function batchedDbUpdate(
   muUpdate,
   graph,
@@ -72,7 +54,7 @@ ${batch}
 
     await operationWithRetry(insertCall, 0, maxAttempts, sleepTimeOnFail);
 
-    console.log(`OK. Sleeping before next query execution: ${sleepBetweenBatches}`);
+    console.log(`Sleeping before next query execution: ${sleepBetweenBatches}`);
     await new Promise(r => setTimeout(r, sleepBetweenBatches));
   }
 }
@@ -111,7 +93,7 @@ async function insertIntoPublicGraph(lib, statements) {
     'http://mu.semte.ch/graphs/public',
     statements,
     {},
-    MU_SPARQL_ENDPOINT,
+    process.env.MU_SPARQL_ENDPOINT,
     BATCH_SIZE,
     MAX_DB_RETRY_ATTEMPTS,
     SLEEP_BETWEEN_BATCHES,
@@ -121,21 +103,21 @@ async function insertIntoPublicGraph(lib, statements) {
 
 async function insertIntoSpecificGraphs(lib, statementsWithGraphs) {
 
-  for( let graph in statementsWithGraphs) {
+  for (let graph in statementsWithGraphs) {
     console.log(`Inserting ${statementsWithGraphs[graph].length} statements into ${graph} graph`);
     await batchedDbUpdate(
       lib.muAuthSudo.updateSudo,
       graph,
       statementsWithGraphs[graph],
       {},
-      MU_SPARQL_ENDPOINT,
+      process.env.MU_SPARQL_ENDPOINT,
       BATCH_SIZE,
       MAX_DB_RETRY_ATTEMPTS,
       SLEEP_BETWEEN_BATCHES,
       SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
       'INSERT');
   }
-  
+
 }
 
 async function deleteFromPublicGraph(lib, statements) {
@@ -146,7 +128,7 @@ async function deleteFromPublicGraph(lib, statements) {
     'http://mu.semte.ch/graphs/public',
     statements,
     {},
-    MU_SPARQL_ENDPOINT,
+    process.env.MU_SPARQL_ENDPOINT,
     BATCH_SIZE,
     MAX_DB_RETRY_ATTEMPTS,
     SLEEP_BETWEEN_BATCHES,
@@ -155,76 +137,38 @@ async function deleteFromPublicGraph(lib, statements) {
 }
 
 async function deleteFromSpecificGraphs(lib, statementsWithGraphs) {
-  for( let graph in statementsWithGraphs) {
+
+
+  for (let graph in statementsWithGraphs) {
     console.log(`Deleting ${statementsWithGraphs[graph].length} statements from ${graph} graph`);
     await batchedDbUpdate(
       lib.muAuthSudo.updateSudo,
       graph,
       statementsWithGraphs[graph],
       {},
-      MU_SPARQL_ENDPOINT,
+      process.env.MU_SPARQL_ENDPOINT,
       BATCH_SIZE,
       MAX_DB_RETRY_ATTEMPTS,
       SLEEP_BETWEEN_BATCHES,
       SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
       'DELETE');
   }
+
 }
 
-async function moveToPublic(muUpdate, endpoint, limited) {
+async function moveToPublic(muUpdate, endpoint) {
   console.log('moving to public')
   await moveTypeToPublic(muUpdate, endpoint, 'code:BestuurseenheidClassificatieCode')
-  await moveAdminUnitsToPublic(muUpdate, endpoint, limited)
-  await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuursorgaan')
+  await moveTypeToPublic(muUpdate, endpoint, 'code:TypeVestiging')
+  await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuurseenheid')
   await moveTypeToPublic(muUpdate, endpoint, 'skos:Concept')
   await moveTypeToPublic(muUpdate, endpoint, 'euvoc:Country')
   await moveTypeToPublic(muUpdate, endpoint, 'prov:Location')
+  await moveTypeToPublic(muUpdate, endpoint, 'org:ChangeEvent')
+  await moveTypeToPublic(muUpdate, endpoint, 'code:VeranderingsgebeurtenisResultaat')
+  await moveTypeToPublic(muUpdate, endpoint, 'code:Veranderingsgebeurtenis')
   await moveTypeToPublic(muUpdate, endpoint, 'code:OrganisatieStatusCode')
-}
-
-/**
- * Similar to moveTypeToPublic but special filter for admin units and only applied if the last parameter limit is true.
- * @param { any } muUpdate 
- * @param { any } endpoint 
- * @param { boolean } limit 
- */
-async function moveAdminUnitsToPublic(muUpdate, endpoint, limit) {
-  if (!limit) {
-    await moveTypeToPublic(muUpdate, endpoint, 'besluit:Bestuurseenheid');
-    return;
-  }
-  await muUpdate(`
-    ${prefixes}
-    DELETE {
-      GRAPH <${LANDING_ZONE_GRAPH}> {
-        ?subject a besluit:Bestuurseenheid;
-          ?pred ?obj.
-      }
-    }
-    INSERT {
-      GRAPH <http://mu.semte.ch/graphs/public> {
-        ?subject a besluit:Bestuurseenheid;
-          ?pred ?obj.
-      }
-    }
-    WHERE {
-      VALUES (?classification ?classificationLabel) {
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000001> "Gemeente")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000000> "Provincie")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/36a82ba0-7ff1-4697-a9dd-2e94df73b721> "Autonoom gemeentebedrijf")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/80310756-ce0a-4a1b-9b8e-7c01b6cc7a2d> "Autonoom provinciebedrijf")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000002> "OCMW")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/5ab0e9b8a3b2ca7c5e000003> "District")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/a3922c6d-425b-474f-9a02-ffb71a436bfc> "Politiezone")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/2ad46df5-5c79-4d67-84d5-604c1377231e> "PEVA gemeente")
-        ( <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/088784b6-e188-48bf-b94f-94665f9e1f53> "PEVA provincie")
-      }
-      ?subject a besluit:Bestuurseenheid;
-        org:classification ?classification;
-        ?pred ?obj.
-    }
-  `, undefined, endpoint);
-  console.log(`MOVE TO PUBLIC SUCCEEDED!!! Successfully moved  besluit:Bestuurseenheid limited to specific classes.`)
+  await moveTypeToPublic(muUpdate, endpoint, 'code:TypeEredienst')
 }
 
 async function moveTypeToPublic(muUpdate, endpoint, type) {
@@ -246,9 +190,9 @@ async function moveTypeToPublic(muUpdate, endpoint, type) {
       ?subject a ${type};
           ?pred ?obj.
     }
-  `, undefined, endpoint);
-  console.log(`MOVE TO PUBLIC SUCCEEDED!!! Successfully moved ${type}`)
+  `, undefined, endpoint)
 }
+
 
 async function moveToOrganizationsGraph(muUpdate, endpoint) {
 
@@ -314,6 +258,32 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
     }
   `, undefined, endpoint)
 
+  // move primary sites
+  await muUpdate(`
+    ${prefixes}
+    DELETE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+        ?primarySite ?pp ?po.
+        ?addr ?ap ?ao.
+
+      }
+    }
+    INSERT {
+      GRAPH <http://mu.semte.ch/graphs/public> {
+       ?primarySite ?pp ?po.
+        ?addr ?ap ?ao.
+      }
+    }
+    WHERE {
+      GRAPH <${LANDING_ZONE_GRAPH}> {
+           ?s a <http://data.vlaanderen.be/ns/besluit#Bestuurseenheid>;
+              <http://www.w3.org/ns/org#hasPrimarySite> ?primarySite.
+           ?primarySite <http://www.w3.org/ns/org#siteAddress> ?addr; ?pp ?po.
+           ?addr ?ap ?ao.
+      }
+    }
+  `, undefined, endpoint);
+
   //Move worships to assure everyone gets also the type besturseenheid and organization
   await muUpdate(`
     ${prefixes}
@@ -321,7 +291,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
       GRAPH <${LANDING_ZONE_GRAPH}> {
         ?subject a ?type;
           ?pred ?obj.
-          
+
       }
     }
     INSERT {
@@ -338,7 +308,9 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         VALUES ?type { <http://data.lblod.info/vocabularies/erediensten/BestuurVanDeEredienst> <http://data.lblod.info/vocabularies/erediensten/CentraalBestuurVanDeEredienst> }
       }
     }
-  `, undefined, endpoint)
+  `, undefined, endpoint);
+
+
 
   //Create mock users
   await muUpdate(`
@@ -354,7 +326,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         ?account a foaf:OnlineAccount;
                 mu:uuid ?uuidAccount;
                 foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "DM-AdminUnitAdministratorRole" . 
+                ext:sessionRole "DM-AdminUnitAdministratorRole" .
       }
       GRAPH ?g {
         ?persoon a foaf:Person;
@@ -366,7 +338,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         ?account a foaf:OnlineAccount;
                 mu:uuid ?uuidAccount;
                 foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "DM-AdminUnitAdministratorRole" . 
+                ext:sessionRole "DM-AdminUnitAdministratorRole" .
       }
     }
     WHERE {
@@ -382,15 +354,26 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         BIND(IRI(CONCAT("http://mu.semte.ch/graphs/organizations/", ?adminUnitUuid)) AS ?g)
     }
   `, undefined, endpoint)
+
+}
+
+async function transformLandingZoneGraph(fetch, endpoint, mapping = 'main') {
+  console.log(`Transforming landing zone graph: ${LANDING_ZONE_GRAPH}`);
+
+  const response = await fetch(`http://reasoner/reason/op2clb/${mapping}?data=${encodeURIComponent(`${endpoint}?default-graph-uri=&query=CONSTRUCT+%7B%0D%0A%3Fs+%3Fp+%3Fo%0D%0A%7D+WHERE+%7B%0D%0A+GRAPH+<${LANDING_ZONE_GRAPH}>+%7B%0D%0A%3Fs+%3Fp+%3Fo%0D%0A%7D%0D%0A%7D&should-sponge=&format=text%2Fplain&timeout=0&run=+Run+Query`)}`);
+  const text = await response.text();
+  const statements = text.replace(/\n{2,}/g, '').split('\n');
+
+  return statements;
 }
 
 module.exports = {
   batchedDbUpdate,
+  moveToOrganizationsGraph,
   moveToPublic,
   insertIntoPublicGraph,
   deleteFromPublicGraph,
   insertIntoSpecificGraphs,
   deleteFromSpecificGraphs,
-  moveToOrganizationsGraph,
-  prefixes,
+  transformLandingZoneGraph
 };
