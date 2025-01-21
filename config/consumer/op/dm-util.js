@@ -32,16 +32,16 @@ PREFIX ext:<http://mu.semte.ch/vocabularies/ext/>
 `
 /**
  * Batched db funtion copied from delta-notifier single graph util
- * @param {(string):Promise<void>} muUpdate 
- * @param {string} graph 
- * @param {object[]} triples 
- * @param {object} extraHeaders 
- * @param {string} endpoint 
- * @param {number} batchSize 
- * @param {number} maxAttempts 
- * @param {number} sleepBetweenBatches 
- * @param {number} sleepTimeOnFail 
- * @param {string} operation 
+ * @param {(string):Promise<void>} muUpdate
+ * @param {string} graph
+ * @param {object[]} triples
+ * @param {object} extraHeaders
+ * @param {string} endpoint
+ * @param {number} batchSize
+ * @param {number} maxAttempts
+ * @param {number} sleepBetweenBatches
+ * @param {number} sleepTimeOnFail
+ * @param {string} operation
  */
 async function batchedDbUpdate(
   muUpdate,
@@ -135,7 +135,7 @@ async function insertIntoSpecificGraphs(lib, statementsWithGraphs) {
       SLEEP_TIME_AFTER_FAILED_DB_OPERATION,
       'INSERT');
   }
-  
+
 }
 
 async function deleteFromPublicGraph(lib, statements) {
@@ -184,9 +184,9 @@ async function moveToPublic(muUpdate, endpoint, limited) {
 
 /**
  * Similar to moveTypeToPublic but special filter for admin units and only applied if the last parameter limit is true.
- * @param { any } muUpdate 
- * @param { any } endpoint 
- * @param { boolean } limit 
+ * @param { any } muUpdate
+ * @param { any } endpoint
+ * @param { boolean } limit
  */
 async function moveAdminUnitsToPublic(muUpdate, endpoint, limit) {
   if (!limit) {
@@ -321,7 +321,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
       GRAPH <${LANDING_ZONE_GRAPH}> {
         ?subject a ?type;
           ?pred ?obj.
-          
+
       }
     }
     INSERT {
@@ -354,7 +354,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         ?account a foaf:OnlineAccount;
                 mu:uuid ?uuidAccount;
                 foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "DM-AdminUnitAdministratorRole" . 
+                ext:sessionRole "DMGEBRUIKER" .
       }
       GRAPH ?g {
         ?persoon a foaf:Person;
@@ -366,7 +366,7 @@ async function moveToOrganizationsGraph(muUpdate, endpoint) {
         ?account a foaf:OnlineAccount;
                 mu:uuid ?uuidAccount;
                 foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "DM-AdminUnitAdministratorRole" . 
+                ext:sessionRole "DMGEBRUIKER" .
       }
     }
     WHERE {

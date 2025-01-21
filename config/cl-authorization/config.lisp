@@ -161,7 +161,7 @@
           SELECT DISTINCT ?session_group ?session_role WHERE {
             <SESSION_ID> ext:sessionGroup/mu:uuid ?session_group;
                          ext:sessionRole ?session_role.
-            FILTER( ?session_role = \"DM-AdminUnitAdministratorRole\" )
+            FILTER( ?session_role = \"DMGEBRUIKER\" )
           }")
 
 ;;;;;;;;;;;;;;;;

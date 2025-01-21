@@ -1,4 +1,4 @@
-const { 
+const {
   DCR_LANDING_ZONE_GRAPH,
   LANDING_ZONE_GRAPH,
   BATCH_SIZE,
@@ -12,8 +12,8 @@ const {
   MU_SPARQL_ENDPOINT,
   LIMIT_ADMIN_UNIT_TYPES,
 } = require("./dm-config.js");
-const { 
-  batchedDbUpdate, 
+const {
+  batchedDbUpdate,
   moveToPublic,
   moveToOrganizationsGraph,
   prefixes
@@ -77,7 +77,7 @@ async function onFinishInitialIngest(lib) {
   console.log(`!! On-finish triggered.`);
   const {mu, muAuthSudo, fech} = lib
   // Move from ingest graph to public graph
-  
+
   await moveToPublic(muAuthSudo.updateSudo, endpoint, limitTypes);
   await moveToOrganizationsGraph(muAuthSudo.updateSudo, endpoint); // Crash
   // Create mock login users
@@ -94,7 +94,7 @@ async function onFinishInitialIngest(lib) {
         ?account a foaf:OnlineAccount;
                 mu:uuid ?uuidAccount;
                 foaf:accountServiceHomepage <https://github.com/lblod/mock-login-service>;
-                ext:sessionRole "DM-AdminUnitAdministratorRole" . 
+                ext:sessionRole "DMGEBRUIKER" .
       }
     }
     WHERE {
@@ -115,9 +115,9 @@ async function onFinishInitialIngest(lib) {
   // Perhaps try query of Nordine. Perform research?
   // Groeispurt? 5 sprint in growth spurt
   // Last sprint is innovative sprint
-  
+
 }
-  
+
 module.exports = {
   dispatch,
   onFinishInitialIngest
