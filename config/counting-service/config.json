@@ -1,37 +1,49 @@
 {
-    "endpoints": [
-      {
-        "url": "https://qa.centrale-vindplaats.lblod.info/sparql",
-        "classes": [
-          "besluit:Besluit",
-          "besluit:Agendapunt",
-          "besluit:Zitting",
-          "besluit:Stemming"
-        ]
-      }
-    ],
-    "harvester-endpoints": [
-      {
-        "url": "https://lokaalbeslist-harvester-0.s.redhost.be/sparql"
-      },
-      {
-        "url": "https://lokaalbeslist-harvester-1.s.redhost.be/sparql"
-      },
-      {
-        "url": "https://lokaalbeslist-harvester-2.s.redhost.be/sparql"
-      },
-      {
-        "url": "https://lokaalbeslist-harvester-3.s.redhost.be/sparql"
-      }
-    ],
-    "periodic-function-invocation-times": {
-      "COUNT_RESOURCES": {
-        "time": "00:00",
-        "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
-      },
-      "CHECK_HARVESTING_EXECUTION_TIME": {
-        "time": "00:00",
-        "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
-      }
+  "endpoints": [
+    {
+      "url": "https://qa.centrale-vindplaats.lblod.info/sparql",
+      "classes": [
+        "besluit:Besluit",
+        "besluit:Agendapunt",
+        "besluit:Zitting",
+        "besluit:Stemming"
+      ]
+    }
+  ],
+  "harvester-endpoints": [
+    {
+      "url": "https://lokaalbeslist-harvester-0.s.redhost.be/sparql"
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-1.s.redhost.be/sparql"
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-2.s.redhost.be/sparql"
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-3.s.redhost.be/sparql"
+    }
+  ],
+  "periodic-function-invocation-times": {
+    "COUNT_RESOURCES": {
+      "time": "03:20",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+    },
+    "CHECK_HARVESTING_EXECUTION_TIME": {
+      "time": "04:20",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+    },
+    "CHECK_MATURITY_LEVEL": {
+      "time": "04:45",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+    },
+    "CHECK_SESSION_COMPLETENESS": {
+      "time": "05:20",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+    },
+    "CHECK_SESSION_TIMESTAMPS": {
+      "time": "05:45",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
     }
   }
+}
