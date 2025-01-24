@@ -55,6 +55,10 @@
                 "pref-label": {
                     "type": "string",
                     "predicate": "skos:prefLabel"
+                },
+                "class-label": {
+                    "type": "string",
+                    "predicate": "datamonitoring:classLabel"
                 }
             },
             "relationships": {
