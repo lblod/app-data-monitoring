@@ -63,7 +63,7 @@
             },
             "relationships": {
                 "administrative-unit": {
-                    "predicate": "datamonitoring:targetAdminitrativeUnit",
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
                     "target": "administrative-unit",
                     "cardinality": "one"
                 },
@@ -255,6 +255,44 @@
                 "last-session": {
                     "type": "datetime",
                     "predicate": "datamonitoring:lastSession"
+                }
+            },
+            "relationships": {
+                "administrative-unit": {
+                    "predicate": "datamonitoring:targetAdministrativeUnit",
+                    "target": "administrative-unit",
+                    "cardinality": "one"
+                }
+            },
+            "new-resource-base": "http://data.lblod.info/id/"
+        },
+        "decision-count-reports": {
+            "name": "decision-count-report",
+            "class": "datamonitoring:DecisionReport",
+            "attributes": {
+                "uuid": {
+                    "type": "string",
+                    "predicate": "mu:uuid"
+                },
+                "created-at": {
+                    "type": "datetime",
+                    "predicate": "datamonitoring:createdAt"
+                },
+                "day": {
+                    "type": "date",
+                    "predicate": "datamonitoring:day"
+                },
+                "class-label": {
+                    "type": "string",
+                    "predicate": "datamonitoring:classLabel"
+                },
+                "pref-label": {
+                    "type": "string",
+                    "predicate": "skos:prefLabel"
+                },
+                "count": {
+                    "type": "number",
+                    "predicate": "datamonitoring:count"
                 }
             },
             "relationships": {

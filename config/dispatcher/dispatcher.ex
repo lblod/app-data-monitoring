@@ -57,6 +57,9 @@ defmodule Dispatcher do
   get "/session-timestamp-reports/*path", _ do
     forward conn, path, "http://resource/session-timestamp-reports/"
   end
+  get "/decision-count-reports/*path", _ do
+    forward conn, path, "http://resource/decision-count-reports/"
+  end
   get "/administrative-units/*path", _ do
     forward conn, path, "http://resource/administrative-units/"
   end

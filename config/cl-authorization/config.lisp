@@ -103,6 +103,7 @@
   ("dct:PeriodOfTime" -> _)
   ("schema:ContactPoint" -> _)
   ("locn:Address" -> _)
+  ("datamonitoring:DecisionReport" -> _)
   ("datamonitoring:GoverningBodyCountReport" -> _)
   ("datamonitoring:PublicationCountReport" -> _)
   ("datamonitoring:AdminUnitCountReport" -> _)
