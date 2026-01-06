@@ -1,0 +1,10 @@
+DELETE {
+  GRAPH <http://mu.semte.ch/graphs/public> {
+    ?s ?p ?o
+  }
+}
+WHERE {
+  GRAPH <http://mu.semte.ch/graphs/landing-zone/organizations-public-info> {
+    ?s ?p ?o
+  }
+}
