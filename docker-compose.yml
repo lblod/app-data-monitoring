@@ -59,6 +59,7 @@ services:
       EMBER_OAUTH_API_LOGOUT_URL: "https://authenticatie-ti.vlaanderen.be/op/v1/logout"
       EMBER_OAUTH_API_SCOPE: "tbd"
       EMBER_OAUTH_SWITCH_URL: "https://datamonitoringtool.lblod.info/authorization/switch"
+      EMBER_LOKAALBESLIST_URL: "https://lokaalbeslist.lblod.info/"
     restart: always
     logging: *default-logging
     labels:
@@ -176,8 +177,8 @@ services:
     environment:
       DCR_SYNC_BASE_URL: "https://organisaties.abb.lblod.info/" # Copied from CLB
       DCR_SERVICE_NAME: "op-consumer"
-      DCR_SYNC_FILES_PATH: "/sync/organizations-public-info/files"
-      DCR_SYNC_DATASET_SUBJECT: "http://data.lblod.info/datasets/delta-producer/dumps/OrganizationsPublicInfoCacheGraphDump"
+      DCR_SYNC_FILES_PATH: "/sync/public/files"
+      DCR_SYNC_DATASET_SUBJECT: "http://data.lblod.info/datasets/delta-producer/dumps/PublicCacheGraphDump"
       DCR_INITIAL_SYNC_JOB_OPERATION: "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/consumer/op"
       DCR_DELTA_SYNC_JOB_OPERATION: "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/consumer/opDeltaFileSyncing"
       DCR_JOB_CREATOR_URI: "http://data.lblod.info/services/id/op-consumer"
@@ -189,7 +190,7 @@ services:
       # SLEEP_BETWEEN_BATCHES: 100
       BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES: "true"
       INGEST_GRAPH: "http://mu.semte.ch/graphs/ingest"
-      DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op"
+      DCR_LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/landing-zone/op-public"
       DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
       DCR_DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
     volumes:

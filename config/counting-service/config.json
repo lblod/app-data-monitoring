@@ -1,7 +1,35 @@
 {
+  "$schema": "https://raw.githubusercontent.com/lblod/dm-count-report-generation-service/master/config-schema.json",
   "endpoints": [
     {
-      "url": "https://qa.centrale-vindplaats.lblod.info/sparql",
+      "url": "https://lokaalbeslist-harvester-0.s.redhost.be/sparql",
+      "classes": [
+        "besluit:Besluit",
+        "besluit:Agendapunt",
+        "besluit:Zitting",
+        "besluit:Stemming"
+      ]
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-1.s.redhost.be/sparql",
+      "classes": [
+        "besluit:Besluit",
+        "besluit:Agendapunt",
+        "besluit:Zitting",
+        "besluit:Stemming"
+      ]
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-2.s.redhost.be/sparql",
+      "classes": [
+        "besluit:Besluit",
+        "besluit:Agendapunt",
+        "besluit:Zitting",
+        "besluit:Stemming"
+      ]
+    },
+    {
+      "url": "https://lokaalbeslist-harvester-3.s.redhost.be/sparql",
       "classes": [
         "besluit:Besluit",
         "besluit:Agendapunt",
@@ -37,12 +65,12 @@
       "time": "04:45",
       "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
     },
-    "CHECK_SESSION_COMPLETENESS": {
-      "time": "05:20",
-      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
-    },
     "CHECK_SESSION_TIMESTAMPS": {
       "time": "05:45",
+      "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
+    },
+    "DECISION_REPORT_DAILY": {
+      "time": "06:00",
       "days": "monday,tuesday,wednesday,thursday,friday,saturday,sunday"
     }
   }
