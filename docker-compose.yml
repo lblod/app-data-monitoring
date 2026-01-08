@@ -195,7 +195,7 @@ services:
       DCR_DIRECT_DATABASE_ENDPOINT: "http://triplestore:8890/sparql"
     volumes:
       - ./data/files/consumer-files/op-public:/consumer-files/
-      - ./data/files/consumer-files/op-public:/sync/organizations-public-info/files
+      - ./data/files/consumer-files/op-public:/sync/public/files
       - ./config/consumer/op:/config/triples-dispatching/custom-dispatching
     links:
       - triplestore:database
