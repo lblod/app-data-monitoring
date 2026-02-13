@@ -183,6 +183,10 @@
                 "created-at": {
                     "type": "datetime",
                     "predicate": "datamonitoring:createdAt"
+                },
+                "status": {
+                    "type": "url",
+                    "predicate": "datamonitoring:status"
                 }
             },
             "relationships": {
