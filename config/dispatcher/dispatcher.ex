@@ -32,10 +32,6 @@ defmodule Dispatcher do
   ###############
   # resource
   ###############
-  match "/sparql/*path" do
-    Proxy.forward conn, path, "http://triplestore:8890/sparql/"
-  end
-
   get "/admin-unit-count-reports/*path", _ do
     forward conn, path, "http://resource/admin-unit-count-reports/"
   end
